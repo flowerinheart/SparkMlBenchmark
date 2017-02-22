@@ -32,3 +32,4 @@ project/plugins/project/
 .gitignore
 data/
 result/
+out/
