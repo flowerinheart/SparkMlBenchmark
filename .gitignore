@@ -3,6 +3,11 @@
 *.class
 *.log
 
+
+#intellij
+*.iml
+.idea
+
 # sbt specific
 .cache
 .history
