@@ -239,3 +239,21 @@ function  CPTO() {
     fi
 }
 
+
+function run_benchmark() {
+# set algorithm enviroment variable
+. "$DIR/../env/$1"
+#DU ${INPUT_HDFS} SIZE
+# prepare spark opt
+set_gendata_opt
+set_run_opt
+set_MKL --MKL
+set_Java_OPT
+setup
+
+# remove data file
+#RM ${OUTPUT_HDFS}
+
+JAR="${DIR}/../benchmarks/target/spark.benchmarks-${BENCH_VERSION}.jar"
+echo_and_run sh -c " ${SPARK_HOME}/bin/spark-submit --name ${CLASS} --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR} ${OPTION}"
+}
