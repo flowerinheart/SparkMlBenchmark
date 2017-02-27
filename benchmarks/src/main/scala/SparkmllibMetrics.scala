@@ -1,12 +1,11 @@
-
-
 import java.io.{File, PrintWriter}
 
-
 /**
-  * Created by Darnell on 2017/2/21.
+  * Created by Darnell on 2017/2/24.
   */
-class SparkMetrics[D, M](val modelName : String) {
+
+
+class SparkmllibMetrics[D, M](val modelName : String) {
   var trainTime = 0.0
   var testTime = 0.0
   var loadTime = 0.0
@@ -31,7 +30,7 @@ class SparkMetrics[D, M](val modelName : String) {
     t
   }
 
-  def onTest(test : => Unit): Unit ={
+  def onTest(test : => Unit): Unit = {
     val start = System.nanoTime()
     val t = test
     val end = System.nanoTime()
