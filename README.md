@@ -27,3 +27,4 @@
 
 
 ### how to run
+bin/run-all.sh     run every algorithm define in env directory
