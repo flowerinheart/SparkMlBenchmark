@@ -26,18 +26,27 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
   def main(args: Array[String]): Unit = {
     run(args)
   }
-  val NUM_CLUSTERS, MAX_ITERATION, RUNS, NUM_POINTS, DIMENSTION, SCALING, NUMPAR = Key
+
+  val NUM_CLUSTERS = Key("clusters")
+  val MAX_ITERATION = Key("iteration")
+  val RUNS = Key("runs")
+  val NUM_POINTS = Key("points")
+  val DIMENSTION = Key("dimenstion")
+  val SCALING = Key("scaling")
+  val NUMPAR = Key("numpar")
 
 
 
-  override  def genData(): Unit = {
+
+
+    override  def genData(path : String): Unit = {
     //args: <datadir> <numPoints> <numClusters> <dimenstion> <scaling factor> [numpar]
     val data = KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
                                                           algArgTable(NUM_CLUSTERS).toInt,
                                                           dataGenArgTable(DIMENSTION).toInt,
-                                                          dataGenArgTable(SCALING).toInt,
+                                                          dataGenArgTable(SCALING).toDouble,
                                                           dataGenArgTable(NUMPAR).toInt)
-    data.map(_.mkString(" ")).saveAsTextFile(commonArgTable(DATA_DIR_KEY))
+    data.map(_.mkString(" ")).saveAsTextFile(path)
   }
   override def parseArgs(args: Array[String]): Unit = {
     var index = -1
@@ -45,8 +54,8 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
     commonArgTable.put(DATA_DIR_KEY, args(increment()))
     commonArgTable.put(OUTPUT_DIR_KEY, args(increment()))
     commonArgTable.put(MODEL_NAME, "Kmeans")
-    Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR).foreach(algArgTable.put(_, args(increment())))
-    Array(NUM_CLUSTERS, MAX_ITERATION, RUNS).foreach(dataGenArgTable.put(_, args(increment())))
+    Array(NUM_CLUSTERS, MAX_ITERATION, RUNS).foreach(algArgTable.put(_, args(increment())))
+    Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR).foreach(dataGenArgTable.put(_, args(increment())))
   }
 
 

@@ -5,10 +5,10 @@ this=$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
 
 
 
-if [ -f "${this}/env.sh" ] ; then
-    . ${this}/env.sh
+if [ -f "${this}/global_env.sh" ] ; then
+    . ${this}/global_env.sh
 else
-    echo "env.sh is missing"
+    echo "global_env.sh is missing"
     exit 1
 fi
 

@@ -1,8 +1,11 @@
 
 
 import java.io.{File, FileWriter, PrintWriter}
+import java.util.Scanner
 
 import org.apache.spark.{SparkConf, SparkContext}
+
+import scala.io.BufferedSource
 
 
 /**
@@ -19,16 +22,26 @@ abstract class AlgBenchmark[D, M](){
 
 
   type ArgTable = collection.mutable.HashMap[Key, String]
-  class ArgKey extends Enumeration{
-    def Key = ArgKey.Value
-  }
-  object ArgKey extends ArgKey{
-  }
-  def Key = ArgKey.Key
-  type Key = ArgKey.Value
-  val DATA_DIR_KEY, OUTPUT_DIR_KEY, MODEL_NAME = Key
 
-  def run(args : Array[String]) = {
+  object ArgKey extends Enumeration{
+    def Key(name : String) = Value(name)
+    def Key = Value
+  }
+  def Key(name : String) = ArgKey.Key(name)
+  def Key = ArgKey.Key
+  val DATA_DIR_KEY = Key
+  val OUTPUT_DIR_KEY = Key
+  val MODEL_NAME = Key
+  type Key = ArgKey.Value
+
+
+
+
+
+  
+
+
+  def run(args : Array[String]) : Unit = {
     parseArgs(args)
     def extract(key : Key) = {
       commonArgTable.get(key).get match {
@@ -40,31 +53,75 @@ abstract class AlgBenchmark[D, M](){
     val outputDir = extract(OUTPUT_DIR_KEY)
     val modelName = extract(MODEL_NAME)
 
-    if(! (new File(dataDir)).exists())
-      genData()
-    val (loadTime, (trainData, testData)) = recordTime_1(load)(dataDir)
-    val (trainTime, model) = recordTime_1(train)(trainData)
-    val (testTime, _) = recordTime_2(test)(model,testData)
 
-    val statFile = new File(Array(outputDir, "stat.csv") mkString File.separator)
-    val singleFile = new File(Array(outputDir, modelName + ".csv") mkString File.separatorChar.toString)
-    val statPrinter = new PrintWriter(new FileWriter(statFile, true))
-    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true))
+
+
+    def makePath(nameList : Array[String]) = nameList mkString File.separatorChar.toString
+
+
+    val statFile = new File(makePath(Array(outputDir, "stat.csv")))
+    val singleFile = new File(makePath(Array(outputDir, modelName + ".csv")))
+
 
 
     val timeHead = Array("loadTime", "trainTime", "testTime")
     val argumentList = algArgTable.keySet.toArray.sorted
-    val singleHead = argumentList ++ timeHead
+    val singleHead = argumentList.map(_.toString) ++ timeHead
     val statHead = "modelName" +: timeHead
 
-    if(! statFile.exists())
+
+    val manifestFile = new File(makePath(Array(dataDir, "manifest.csv")))
+    val rddDir = makePath(Array(dataDir, "data"))
+
+    def checkManifest() : Boolean = {
+      if(!manifestFile.exists())
+        return false
+      val scanner = new Scanner(manifestFile)
+      val keys = scanner.nextLine().split(",")
+      val values = scanner.nextLine().split(",")
+      keys zip values forall((pair) => dataGenArgTable(ArgKey.withName(pair._1)) == pair._2)
+    }
+    if(! checkManifest()){
+      if(manifestFile.exists()) {
+        val rddDirFile = new File(rddDir)
+        for (file <- rddDirFile.listFiles)
+          file.delete()
+        rddDirFile.delete()
+      }
+      if(statFile.exists())
+        statFile.delete()
+      if(singleFile.exists())
+        singleFile.delete()
+
+
+
+      genData(rddDir)
+      val pt = new PrintWriter(manifestFile)
+      val dataArgKey = dataGenArgTable.keySet.toArray.sorted
+      pt.println(dataArgKey.map(_.toString).mkString(","))
+      pt.println(dataArgKey.map(dataGenArgTable(_)).mkString(","))
+      pt.close
+    }
+
+
+    val b1 = statFile.exists()
+    val b2 = singleFile.exists()
+    val statPrinter = new PrintWriter(new FileWriter(statFile, true))
+    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true))
+    if(! b1)
       statPrinter.println(statHead mkString ",")
-    if(! singleFile.exists())
+    if(! b2)
       singlePrinter.println(singleHead mkString ",")
 
-    statPrinter.println(Array(modelName, loadTime, trainTime, testTime).mkString(","))
-    singlePrinter.println(argumentList.map(algArgTable(_)) ++
-      Array(loadTime, trainTime, testTime).map(_.toString) mkString ",")
+        
+          
+    val (loadTime, (trainData, testData)) = recordTime_1(load)(rddDir)
+    val (trainTime, model) = recordTime_1(train)(trainData)
+    val (testTime, _) = recordTime_2(test)(model,testData)
+
+    val times = Array(loadTime, trainTime, testTime).map(_.toString)
+    statPrinter.println((modelName +: times).mkString(","))
+    singlePrinter.println((argumentList.map(algArgTable(_)) ++ times) mkString ",")
     statPrinter.close()
     singlePrinter.close()
     sc.stop()
@@ -83,9 +140,9 @@ abstract class AlgBenchmark[D, M](){
   def output(outputDir : String, commonTable : ArgTable, algTable : ArgTable, dataGenTable : ArgTable): Unit ={
 
   }
-  abstract def genData() : Unit
-  abstract def parseArgs(args : Array[String]) : Unit
-  abstract def load(dataPath : String) : (D, D)
-  abstract def train(trainData : D) : M
-  abstract def test(model : M, testData : D) : Unit
+  def genData(path : String) : Unit
+  def parseArgs(args : Array[String]) : Unit
+  def load(dataPath : String) : (D, D)
+  def train(trainData : D) : M
+  def test(model : M, testData : D) : Unit
 }
