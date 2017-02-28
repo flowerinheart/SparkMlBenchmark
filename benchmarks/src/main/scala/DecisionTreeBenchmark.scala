@@ -47,11 +47,20 @@ object DecisionTreeBenchmark extends AlgBenchmark[RDD[LabeledPoint], DecisionTre
   override def genData(path: String): Unit = {
     LinearDataGenerator.generateLinearRDD(sc, dataGenArgTable(N_EXAMPLES).toInt,
       dataGenArgTable(N_FEATURES).toInt, dataGenArgTable(EPS).toInt,
-      dataGenArgTable(N_PARTITIONS).toInt).saveAsTextFile(commonArgTable(DATA_DIR_KEY))
+      dataGenArgTable(N_PARTITIONS).toInt).map({point =>
+          new LabeledPoint({
+            val temp = Math.abs(point.label)
+            val upper = algArgTable(N_CLASS).toInt
+            if(temp > upper)
+              upper - 1
+            else
+              temp
+          }, point.features)}).
+            saveAsTextFile(path)
   }
 
   override def load(dataPath: String): (RDD[LabeledPoint], RDD[LabeledPoint]) = {
-    val data = sc.textFile(commonArgTable(DATA_DIR_KEY)).map(LabeledPoint.parse(_))
+    val data = sc.textFile(dataPath).map(LabeledPoint.parse(_))
     data.cache()
     (data, data)
   }

@@ -131,8 +131,8 @@ abstract class AlgBenchmark[D, M](){
 
     val b1 = statFile.exists()
     val b2 = singleFile.exists()
-    val statPrinter = new PrintWriter(new FileWriter(statFile, true))
-    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true))
+    val statPrinter = new PrintWriter(new FileWriter(statFile, true), true)
+    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true), true)
     if(! b1)
       statPrinter.println(statHead mkString ",")
     if(! b2)

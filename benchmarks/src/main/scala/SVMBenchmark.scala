@@ -30,7 +30,7 @@ object SVMBenchmark extends AlgBenchmark[RDD[LabeledPoint], SVMModel]{
   override def genData(path: String): Unit = {
       LinearDataGenerator.generateLinearRDD(sc, dataGenArgTable(N_EXAMPLES).toInt,
         dataGenArgTable(N_FEATURES).toInt, dataGenArgTable(EPS).toInt,
-        dataGenArgTable(N_PARTITIONS).toInt).saveAsTextFile(commonArgTable(DATA_DIR_KEY))
+        dataGenArgTable(N_PARTITIONS).toInt).saveAsTextFile(path)
   }
 
   override def load(dataPath: String): (RDD[LabeledPoint], RDD[LabeledPoint]) = {

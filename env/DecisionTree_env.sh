@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 CLASS="skydata.spark.benchmark.DecisionTreeBenchmark"
+BENCHMARK_NAME="DecisionTree"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
-DATA_DIR="${DIR}/data/BENCHMARK_NAME"
+DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
-BENCHMARK_NAME="DecisionTree"
 
 
 # for gen_data.sh;  200M data size = 1 million points

@@ -5,7 +5,7 @@ CLASS="skydata.spark.benchmark.KmeansBenchmark"
 BENCHMARK_NAME="Kmeans"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
-DATA_DIR="${DIR}/data/BENCHMARK_NAME"
+DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
 NUM_OF_CLUSTERS=20
