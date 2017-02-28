@@ -1,3 +1,5 @@
+
+package skydata.spark.benchmark
 import java.io.{File, PrintWriter}
 
 /**

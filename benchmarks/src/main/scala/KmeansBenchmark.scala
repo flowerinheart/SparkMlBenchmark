@@ -15,6 +15,7 @@
  */
 
 
+package skydata.spark.benchmark
 import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.util.KMeansDataGenerator
@@ -23,9 +24,6 @@ import org.apache.spark.rdd.RDD
 
 
 object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
-  def main(args: Array[String]): Unit = {
-    run(args)
-  }
 
   val NUM_CLUSTERS = Key("clusters")
   val MAX_ITERATION = Key("iteration")
@@ -41,7 +39,8 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
 
     override  def genData(path : String): Unit = {
     //args: <datadir> <numPoints> <numClusters> <dimenstion> <scaling factor> [numpar]
-    val data = KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
+      println("***************************" + commonArgTable(BENCHMARK_NAME))
+      val data = KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
                                                           algArgTable(NUM_CLUSTERS).toInt,
                                                           dataGenArgTable(DIMENSTION).toInt,
                                                           dataGenArgTable(SCALING).toDouble,
@@ -51,9 +50,7 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
   override def parseArgs(args: Array[String]): Unit = {
     var index = -1
     val increment = () => {index += 1; index}
-    commonArgTable.put(DATA_DIR_KEY, args(increment()))
-    commonArgTable.put(OUTPUT_DIR_KEY, args(increment()))
-    commonArgTable.put(MODEL_NAME, "Kmeans")
+    Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME).foreach(commonArgTable.put(_, args(increment())))
     Array(NUM_CLUSTERS, MAX_ITERATION, RUNS).foreach(algArgTable.put(_, args(increment())))
     Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR).foreach(dataGenArgTable.put(_, args(increment())))
   }
