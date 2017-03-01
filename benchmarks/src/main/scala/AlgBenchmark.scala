@@ -1,23 +1,34 @@
 
+package skydata.spark.benchmark
 
 import java.io.{File, FileWriter, PrintWriter}
 import java.util.Scanner
 
 import org.apache.spark.{SparkConf, SparkContext}
 
-import scala.io.BufferedSource
-
 
 /**
   * Created by Darnell on 2017/2/21.
   */
+
+object Util{
+
+}
+
+
 abstract class AlgBenchmark[D, M](){
+  def main(args : Array[String]): Unit ={
+    run(args)
+  }
+
   val conf = new SparkConf
   val sc = new SparkContext(conf)
 
   val commonArgTable: ArgTable = new ArgTable()
   val dataGenArgTable: ArgTable = new ArgTable()
   val algArgTable: ArgTable = new ArgTable()
+
+
 
 
 
@@ -31,15 +42,28 @@ abstract class AlgBenchmark[D, M](){
   def Key = ArgKey.Key
   val DATA_DIR_KEY = Key
   val OUTPUT_DIR_KEY = Key
-  val MODEL_NAME = Key
+  val BENCHMARK_NAME = Key
   type Key = ArgKey.Value
 
 
 
+  import util.Random.nextString
+  commonArgTable.put(BENCHMARK_NAME, nextString(20))
+  commonArgTable.put(DATA_DIR_KEY, makePath(Array("./data", commonArgTable(BENCHMARK_NAME))))
+  commonArgTable.put(OUTPUT_DIR_KEY, makePath(Array("./result", commonArgTable(BENCHMARK_NAME))))
 
 
-  
 
+
+  def makePath(nameList : Array[String]) = nameList mkString File.separatorChar.toString
+  def checkAndCreatDir(path : String) = {
+    val file = new File(path)
+    if(!file.exists())
+      file.mkdir() match {
+        case true => true
+        case false => throw new RuntimeException("could create dir " + path)
+      }
+  }
 
   def run(args : Array[String]) : Unit = {
     parseArgs(args)
@@ -51,16 +75,17 @@ abstract class AlgBenchmark[D, M](){
     }
     val dataDir = extract(DATA_DIR_KEY)
     val outputDir = extract(OUTPUT_DIR_KEY)
-    val modelName = extract(MODEL_NAME)
+    val benchmarklName = extract(BENCHMARK_NAME)
+    checkAndCreatDir(dataDir)
+    checkAndCreatDir(outputDir)
 
 
 
 
-    def makePath(nameList : Array[String]) = nameList mkString File.separatorChar.toString
 
 
     val statFile = new File(makePath(Array(outputDir, "stat.csv")))
-    val singleFile = new File(makePath(Array(outputDir, modelName + ".csv")))
+    val singleFile = new File(makePath(Array(outputDir, benchmarklName + ".csv")))
 
 
 
@@ -100,14 +125,14 @@ abstract class AlgBenchmark[D, M](){
       val dataArgKey = dataGenArgTable.keySet.toArray.sorted
       pt.println(dataArgKey.map(_.toString).mkString(","))
       pt.println(dataArgKey.map(dataGenArgTable(_)).mkString(","))
-      pt.close
+      pt.close()
     }
 
 
     val b1 = statFile.exists()
     val b2 = singleFile.exists()
-    val statPrinter = new PrintWriter(new FileWriter(statFile, true))
-    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true))
+    val statPrinter = new PrintWriter(new FileWriter(statFile, true), true)
+    val singlePrinter = new PrintWriter(new FileWriter(singleFile, true), true)
     if(! b1)
       statPrinter.println(statHead mkString ",")
     if(! b2)
@@ -120,7 +145,7 @@ abstract class AlgBenchmark[D, M](){
     val (testTime, _) = recordTime_2(test)(model,testData)
 
     val times = Array(loadTime, trainTime, testTime).map(_.toString)
-    statPrinter.println((modelName +: times).mkString(","))
+    statPrinter.println((benchmarklName +: times).mkString(","))
     singlePrinter.println((argumentList.map(algArgTable(_)) ++ times) mkString ",")
     statPrinter.close()
     singlePrinter.close()
