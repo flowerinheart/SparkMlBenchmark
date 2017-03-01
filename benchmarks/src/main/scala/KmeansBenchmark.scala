@@ -33,6 +33,9 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
   val SCALING = Key("scaling")
   val NUMPAR = Key("numpar")
 
+  override lazy val algArgNames : Array[Key] = Array(NUM_CLUSTERS, MAX_ITERATION, RUNS)
+  override lazy val dataGenArgNames : Array[Key] = Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR)
+
 
 
 
@@ -40,19 +43,11 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
     override  def genData(path : String): Unit = {
     //args: <datadir> <numPoints> <numClusters> <dimenstion> <scaling factor> [numpar]
       println("***************************" + commonArgTable(BENCHMARK_NAME))
-      val data = KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
+      KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
                                                           algArgTable(NUM_CLUSTERS).toInt,
                                                           dataGenArgTable(DIMENSTION).toInt,
                                                           dataGenArgTable(SCALING).toDouble,
-                                                          dataGenArgTable(NUMPAR).toInt)
-    data.map(_.mkString(" ")).saveAsTextFile(path)
-  }
-  override def parseArgs(args: Array[String]): Unit = {
-    var index = -1
-    val increment = () => {index += 1; index}
-    Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME).foreach(commonArgTable.put(_, args(increment())))
-    Array(NUM_CLUSTERS, MAX_ITERATION, RUNS).foreach(algArgTable.put(_, args(increment())))
-    Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR).foreach(dataGenArgTable.put(_, args(increment())))
+                                                          dataGenArgTable(NUMPAR).toInt).map(_.mkString(" ")).saveAsTextFile(path)
   }
 
 
@@ -61,6 +56,7 @@ object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
       algArgTable(MAX_ITERATION).toInt,
       algArgTable(RUNS).toInt, KMeans.K_MEANS_PARALLEL, seed = 127L)
   }
+
 
   override def test(model : KMeansModel, testData : RDD[Vector]): Unit = {
     val WSSSE = model.computeCost(testData)
