@@ -23,18 +23,19 @@ import org.apache.spark.rdd.RDD
 
 
 
-object KmeansBenchmark extends AlgBenchmark[RDD[Vector], KMeansModel](){
+object KmeansBenchmark extends SparkMlBenchmark[RDD[Vector], KMeansModel](){
 
   val NUM_CLUSTERS = Key("clusters")
   val MAX_ITERATION = Key("iteration")
   val RUNS = Key("runs")
+
   val NUM_POINTS = Key("points")
   val DIMENSTION = Key("dimenstion")
   val SCALING = Key("scaling")
   val NUMPAR = Key("numpar")
 
-  override lazy val algArgNames : Array[Key] = Array(NUM_CLUSTERS, MAX_ITERATION, RUNS)
   override lazy val dataGenArgNames : Array[Key] = Array(NUM_POINTS, DIMENSTION, SCALING, NUMPAR)
+  override lazy val algArgNames : Array[Key] = Array(NUM_CLUSTERS, MAX_ITERATION, RUNS)
 
 
 

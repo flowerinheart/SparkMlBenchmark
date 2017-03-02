@@ -4,10 +4,6 @@ package skydata.spark.benchmark
 import java.io.{File, FileWriter, PrintWriter}
 import java.util.Scanner
 
-import org.apache.spark.mllib.linalg.Vector
-import org.apache.spark.mllib.regression.LabeledPoint
-import org.apache.spark.mllib.util.LinearDataGenerator
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -15,7 +11,9 @@ import org.apache.spark.{SparkConf, SparkContext}
   */
 
 
-abstract class AlgBenchmark[D, M]() {
+
+
+abstract class SparkMlBenchmark[D, M]() {
   def main(args : Array[String]): Unit ={
     run(args)
   }
@@ -111,10 +109,8 @@ abstract class AlgBenchmark[D, M]() {
       val keys = scanner.nextLine().split(",")
       val values = scanner.nextLine().split(",")
 
-
-      println(ArgKey.values.find(_.toString == "num_of_examples").get)
       keys zip values forall((pair) => dataGenArgTable(
-        ArgKey.values.find(_.toString == pair._1).get) == pair._2)
+        dataGenArgNames.find(_.toString == pair._1).get) == pair._2)
     }
     if(! checkManifest()){
       if(manifestFile.exists()) {
@@ -173,42 +169,6 @@ abstract class AlgBenchmark[D, M]() {
     val res = f(arg1, arg2)
     ((System.currentTimeMillis() - startTime) / 1000, res)
   }
-  def output(outputDir : String, commonTable : ArgTable, algTable : ArgTable, dataGenTable : ArgTable): Unit ={
-
-  }
-
-
-  //help data and func
-  val N_EXAMPLES = Key("num_of_examples")
-  val N_FEATURES = Key("num_of_features")
-  val EPS = Key("eps")
-  val N_PARTITIONS = Key("num_of_partitions")
-  val INTERCEPT = Key("intercept")
-
-
-  val N_ITERATION = Key("num_iteration")
-  def loadLabelPoint(dataPath : String) = {
-    val data = sc.textFile(dataPath).map(LabeledPoint.parse)
-    val training = data.sample(withReplacement = false, 0.7, 11L)
-    val test = data.subtract(training)
-    training.cache()
-    test.cache()
-    (training, test)
-  }
-
-  def generateLinearData = {
-    LinearDataGenerator.generateLinearRDD(sc, dataGenArgTable(N_EXAMPLES).toInt,
-      dataGenArgTable(N_FEATURES).toInt, dataGenArgTable(EPS).toInt,
-      dataGenArgTable(N_PARTITIONS).toInt, dataGenArgTable(INTERCEPT).toDouble)
-  }
-  type PredictModel  = { def predict(value : Vector) : Double}
-  def predictorTest(model : PredictModel, testData : RDD[LabeledPoint]) = {
-    testData.map({ point =>
-      model.predict(point.features)
-    })
-  }
-
-
 
 
   def parseArgs(args : Array[String]) : Unit = {

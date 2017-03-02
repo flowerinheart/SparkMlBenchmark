@@ -6,8 +6,8 @@ import org.apache.spark.rdd.RDD
 /**
   * Created by darnell on 17-3-1.
   */
-object LinearRegressionBenchmark extends AlgBenchmark[RDD[LabeledPoint], LinearRegressionModel] {
-  override lazy val dataGenArgNames : Array[Key] = Array(N_EXAMPLES, N_FEATURES, EPS, N_PARTITIONS, INTERCEPT)
+object LinearRegressionBenchmark extends MllibSupervisalBenchmark[LinearRegressionModel] {
+  val N_ITERATION = Key("num_iteration")
   override lazy val algArgNames : Array[Key] = Array(N_ITERATION)
 
 

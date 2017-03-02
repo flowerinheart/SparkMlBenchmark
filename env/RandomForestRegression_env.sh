@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# for prepare #600M example=40G
-CLASS="skydata.spark.benchmark.SVMBenchmark"
-BENCHMARK_NAME="SVM"
+BENCHMARK_NAME="RandomForestRegression"
+PACKAGE="skydata.spark.benchmark"
+CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
@@ -16,9 +17,11 @@ INTERCEPT=0.0
 DATA_GEN_ARG="${NUM_OF_EXAMPLES} ${NUM_OF_FEATURES} ${EPS} ${NUM_OF_PARTITIONS} ${INTERCEPT}"
 
 
-# for running
-MAX_ITERATION=30
-ALG_ARG="${MAX_ITERATION}"
 
-
-
+# for algorithm
+N_TREES="3"
+F_S_STRATEGY="auto"
+IMPURITY="variance"
+MAX_DEPTH="4"
+MAX_BINS="32"
+ALG_ARG="${N_TREES} ${F_S_STRATEGY} ${IMPURITY} ${MAX_DEPTH} ${MAX_BINS}"
