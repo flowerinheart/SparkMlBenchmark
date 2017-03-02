@@ -6,11 +6,10 @@ import org.apache.spark.rdd.RDD
 /**
   * Created by darnell on 17-3-1.
   */
-object PCABenchmark extends AlgBenchmark[RDD[LabeledPoint], PCAModel]{
+object PCABenchmark extends MllibSupervisalBenchmark[PCAModel]{
 
 
   val DIMENSIONS = Key("dimensions")
-  override lazy val dataGenArgNames : Array[Key] =  Array(N_EXAMPLES, N_FEATURES, EPS, N_PARTITIONS, INTERCEPT)
   override lazy val algArgNames : Array[Key] = Array(DIMENSIONS)
 
   //subtype  method

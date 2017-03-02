@@ -245,6 +245,10 @@ function run_benchmark() {
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 . "$1"
+OPTION="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${DATA_GEN_ARG} ${ALG_ARG}"
+
+
+
 #DU ${INPUT_HDFS} SIZE
 # prepare spark opt
 check_dir $DATA_DIR 
@@ -258,7 +262,6 @@ setup
 # remove data file
 #RM ${OUTPUT_HDFS}
 
-echo "********************8$OPTION"
 #echo $OUTPUT_DIR && exit 0
 JAR="${DIR}/benchmarks/target/spark.benchmarks-${BENCH_VERSION}.jar"
 echo_and_run sh -c " ${SPARK_HOME}/bin/spark-submit --name ${CLASS} --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR} ${OPTION}"

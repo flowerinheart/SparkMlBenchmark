@@ -7,8 +7,9 @@ import org.apache.spark.rdd.RDD
 /**
   * Created by darnell on 17-3-1.
   */
-object LogisticRegressionBenchmark extends AlgBenchmark[RDD[LabeledPoint], LogisticRegressionModel]{
+object LogisticRegressionBenchmark extends MllibSupervisalBenchmark[LogisticRegressionModel]{
   val PROBONE = Key("probOne")
+  val N_ITERATION = Key("num_iteration")
   override lazy val dataGenArgNames : Array[Key] = Array(N_EXAMPLES, N_FEATURES, EPS, N_PARTITIONS, PROBONE)
   override lazy val algArgNames : Array[Key] = Array(N_ITERATION)
 

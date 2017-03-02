@@ -4,5 +4,7 @@ DIR=`cd "$DIR"; pwd`
 . "${DIR}/global_config.sh"
 
 for file in ${DIR}/../env/*; do
-  run_benchmark $file
+  if [ ! `basename "$file"` == "env.template" ]; then
+    run_benchmark $file
+  fi
 done
