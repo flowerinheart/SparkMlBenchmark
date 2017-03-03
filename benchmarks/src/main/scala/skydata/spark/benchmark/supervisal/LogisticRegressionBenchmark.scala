@@ -1,4 +1,5 @@
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.classification.{LogisticRegressionModel, LogisticRegressionWithSGD}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.LogisticRegressionDataGenerator

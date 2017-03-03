@@ -1,6 +1,7 @@
 #!/bin/bash
-CLASS="skydata.spark.benchmark.LinearRegressionBenchmark"
 BENCHMARK_NAME="LinearRegression"
+PACKAGE="skydata.spark.benchmark.supervisal"
+CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"

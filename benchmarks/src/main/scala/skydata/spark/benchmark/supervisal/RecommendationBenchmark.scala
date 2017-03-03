@@ -1,7 +1,7 @@
 /**
   * Created by darnell on 17-3-2.
   */
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
 
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
 import org.apache.spark.mllib.regression.LabeledPoint
@@ -20,7 +20,7 @@ object RecommendationBenchmark extends MllibSupervisalBenchmark[MatrixFactorizat
   override def genData(path : String) : Unit =
     LinearDataGenerator.generateLinearRDD(sc, dataGenArgTable(N_EXAMPLES).toInt,
       2, dataGenArgTable(EPS).toDouble,
-      dataGenArgTable(N_PARTITIONS).toInt, dataGenArgTable(INTERCEPT).toDouble)
+      dataGenArgTable(N_PARTITIONS).toInt, dataGenArgTable(INTERCEPT).toDouble).saveAsTextFile(path)
 
   override def train(trainData: RDD[LabeledPoint]): MatrixFactorizationModel = {
     val ratings = trainData.map({

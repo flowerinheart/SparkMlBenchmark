@@ -1,6 +1,8 @@
 #!/bin/bash
-CLASS="skydata.spark.benchmark.PCABenchmark"
 BENCHMARK_NAME="PCA"
+BENCHMARK_NAME=
+PACKAGE="skydata.spark.benchmark.supervisal"
+CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"

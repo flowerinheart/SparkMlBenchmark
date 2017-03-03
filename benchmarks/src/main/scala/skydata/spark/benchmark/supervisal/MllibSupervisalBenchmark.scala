@@ -1,12 +1,14 @@
 /**
   * Created by darnell on 17-3-2.
   */
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.LinearDataGenerator
 import org.apache.spark.mllib.util.MLUtils.loadLabeledPoints
 import org.apache.spark.rdd.RDD
+import skydata.spark.benchmark.SparkMlBenchmark
 
 
 

@@ -1,5 +1,6 @@
 
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.tree.DecisionTree
 import org.apache.spark.mllib.tree.model.DecisionTreeModel

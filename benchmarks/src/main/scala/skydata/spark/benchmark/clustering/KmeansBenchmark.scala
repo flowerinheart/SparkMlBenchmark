@@ -15,11 +15,13 @@
  */
 
 
-package skydata.spark.benchmark
+package skydata.spark.benchmark.clustering
+
 import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.util.KMeansDataGenerator
 import org.apache.spark.rdd.RDD
+import skydata.spark.benchmark.SparkMlBenchmark
 
 
 
@@ -59,9 +61,7 @@ object KmeansBenchmark extends SparkMlBenchmark[RDD[Vector], KMeansModel](){
   }
 
 
-  override def test(model : KMeansModel, testData : RDD[Vector]): Unit = {
-    val WSSSE = model.computeCost(testData)
-  }
+  override def test(model : KMeansModel, testData : RDD[Vector]): Unit = model.predict(testData)
 
   override def load(dataPath: String): (RDD[Vector], RDD[Vector]) = {
     val data = sc.textFile(dataPath)

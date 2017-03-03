@@ -1,10 +1,12 @@
 /**
   * Created by darnell on 17-3-2.
   */
-package skydata.spark.benchmark
+package skydata.spark.benchmark.clustering
+
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.util.KMeansDataGenerator
 import org.apache.spark.rdd.RDD
+import skydata.spark.benchmark.SparkMlBenchmark
 
 abstract class MllibUnsupervisalBenchmark[M] extends SparkMlBenchmark[RDD[Vector], M] {
   val NUM_POINTS = Key("points")
@@ -34,5 +36,5 @@ abstract class MllibUnsupervisalBenchmark[M] extends SparkMlBenchmark[RDD[Vector
   }
   override  def genData(path : String): Unit = genUnlabeledData.saveAsTextFile(path)
   override def load(dataPath: String): (RDD[Vector], RDD[Vector]) = loadUnlabeledData(dataPath)
-  override def test(model: M, testData: RDD[Vector]): Unit = {}
+  override def test(model: M, testData: RDD[Vector]): Unit
 }
