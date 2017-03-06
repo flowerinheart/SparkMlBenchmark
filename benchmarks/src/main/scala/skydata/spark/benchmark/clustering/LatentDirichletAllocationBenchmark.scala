@@ -13,10 +13,8 @@ object LatentDirichletAllocationBenchmark extends MllibUnsupervisalBenchmark[LDA
 
   val DOCCon = Key("DocConcentration")
   val TOPCON = Key("TopicConcentration")
-  val K = Key("num_topic")
-  val MAX_ITER = Key("max_iterations")
 
-  override lazy val algArgNames = Array(DOCCon, TOPCON, K, MAX_ITER)
+  override lazy val algArgNames = Array(DOCCon, TOPCON, MAX_ITER)
 
 
 
@@ -25,7 +23,7 @@ object LatentDirichletAllocationBenchmark extends MllibUnsupervisalBenchmark[LDA
 
     new LDA().setDocConcentration(algArgTable(DOCCon).toDouble).
       setTopicConcentration(algArgTable(TOPCON).toDouble).
-      setK(algArgTable(K).toInt).
+      setK(dataGenArgTable(N_CLUSTERS).toInt).
       setMaxIterations(algArgTable(MAX_ITER).toInt).
       run(data)
   }
