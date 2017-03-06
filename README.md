@@ -10,23 +10,29 @@
 1. Environment prepare and build
 
     Setup JDK, Apache Spark runtime environment properly
+    
     Download/checkout Spark-Bench
-    Run <SPARK_BENCH_HOME>/bin/build.sh to build Spark-Bench
+    
+    Run $SPARK_BENCH_HOME/bin/build.sh to build Spark-Bench
 
 
 2. Configurations
 
-    Modify <SPARK_BENCH_HOME>/bin/global_env.sh to make sure below variables has been set: 
-        * SPARK_HOME The Spark installation location
-        * SPARK_MASTER Spark master  #see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
+    Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set: 
+    
+    * SPARK_HOME The Spark installation location
+        
+    * SPARK_MASTER Spark master  #see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
 3. Run benchmark
     
     run single benchmark by
-       ./bin/run-single.sh env/<ALG_ENV>
+    
+       ./bin/run-single.sh env/$ALG_ENV
 
     run all benchmarks by
+    
        ./bin/run-all.sh
 
     
