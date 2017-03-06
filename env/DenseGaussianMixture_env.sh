@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-BENCHMARK_NAME="DenseGaussianMixtureBenchmark"
-PACKAGE="skydata.spark.benchmark.supervisal"
+BENCHMARK_NAME="DenseGaussianMixture"
+PACKAGE="skydata.spark.benchmark.clustering"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 
 DIR=`dirname "$0"`
@@ -19,5 +19,6 @@ DATA_GEN_ARG="${NUM_OF_POINTS} ${NUM_OF_CLUSTERS} ${DIMENSIONS} ${SCALING} ${NUM
 
 
 #ALG_ARG=
-MAX_ITERATION=20
-ALG_ARG="${MAX_ITERATION}"
+CONVERGENCE_TOL="0.1"
+MAX_ITERATION="20"
+ALG_ARG="${CONVERGENCE_TOL} ${MAX_ITERATION}"

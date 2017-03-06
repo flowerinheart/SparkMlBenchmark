@@ -8,14 +8,13 @@ import org.apache.spark.rdd.RDD
   * Created by darnell on 17-3-2.
   */
 object BisectingKMeansBenchmark extends MllibUnsupervisalBenchmark[BisectingKMeansModel]{
-  val ITERATION = Key("max_iteration")
-  override lazy val algArgNames : Array[Key] = Array(ITERATION)
+  override lazy val algArgNames : Array[Key] = Array(MAX_ITER)
 
 
   override def train(trainData: RDD[Vector]): BisectingKMeansModel = {
     val bkm = new BisectingKMeans().
-      setK(dataGenArgTable(NUM_CLUSTERS).toInt).
-      setMaxIterations(algArgTable(ITERATION).toInt)
+      setK(dataGenArgTable(N_CLUSTERS).toInt).
+      setMaxIterations(algArgTable(MAX_ITER).toInt)
     bkm.run(trainData)
   }
 

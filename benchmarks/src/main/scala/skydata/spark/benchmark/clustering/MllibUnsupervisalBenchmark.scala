@@ -9,18 +9,22 @@ import org.apache.spark.rdd.RDD
 import skydata.spark.benchmark.SparkMlBenchmark
 
 abstract class MllibUnsupervisalBenchmark[M] extends SparkMlBenchmark[RDD[Vector], M] {
-  val NUM_POINTS = Key("points")
-  val NUM_CLUSTERS = Key("clusters")
+  val N_POINTS = Key("points")
+  val N_CLUSTERS = Key("clusters")
   val DIMENSTION = Key("dimenstion")
   val SCALING = Key("scaling")
   val NUMPAR = Key("numpar")
-  override lazy val dataGenArgNames : Array[Key] = Array(NUM_POINTS, NUM_CLUSTERS, DIMENSTION, SCALING, NUMPAR)
+
+
+
+  val MAX_ITER = Key("max_iteration")
+  override lazy val dataGenArgNames : Array[Key] = Array(N_POINTS, N_CLUSTERS, DIMENSTION, SCALING, NUMPAR)
 
 
 
   def genUnlabeledData =
-    KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(NUM_POINTS).toInt,
-      algArgTable(NUM_CLUSTERS).toInt,
+    KMeansDataGenerator.generateKMeansRDD(sc, dataGenArgTable(N_POINTS).toInt,
+      dataGenArgTable(N_CLUSTERS).toInt,
       dataGenArgTable(DIMENSTION).toInt,
       dataGenArgTable(SCALING).toDouble,
       dataGenArgTable(NUMPAR).toInt).map(_.mkString(" "))

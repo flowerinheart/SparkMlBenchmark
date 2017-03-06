@@ -11,6 +11,7 @@ object IsotonicRegressionBenchmark extends MllibSupervisalBenchmark[IsotonicRegr
 
 
   val ISOTONIC = Key("Isotonic")
+  override lazy val algArgNames = Array(ISOTONIC)
 
   override def train(trainData: RDD[LabeledPoint]): IsotonicRegressionModel =
     new IsotonicRegression().setIsotonic(algArgTable(ISOTONIC).toBoolean).run(trainData.map{lp =>

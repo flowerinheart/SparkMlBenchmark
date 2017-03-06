@@ -25,6 +25,11 @@ abstract class SparkMlBenchmark[D, M]() {
 
 
 
+  def set_alg_arg = (fun : (String) => AnyRef, key : Key) => {
+    val str = algArgTable(key)
+    if(str != "default")
+      fun(str)
+  }
 
 
 
@@ -48,8 +53,8 @@ abstract class SparkMlBenchmark[D, M]() {
 
 
   lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME)
-  lazy val algArgNames : Array[Key] = null
-  lazy val dataGenArgNames : Array[Key] = null
+  lazy val algArgNames : Array[Key] = Array()
+  lazy val dataGenArgNames : Array[Key] = Array()
 
   import util.Random.nextString
   commonArgTable.put(BENCHMARK_NAME, nextString(20))
