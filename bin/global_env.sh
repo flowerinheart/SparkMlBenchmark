@@ -1,23 +1,23 @@
 master="127.0.0.1"
-#A list of machines where the spark cluster is running
-MC_LIST=""
 
 
 #[ -z "$HADOOP_HOME" ] &&     export HADOOP_HOME=/YOUR/HADOOP
 # base dir for DataSet
 #HDFS_URL="hdfs://${master}:9000"
 #SPARK_HADOOP_FS_LOCAL_BLOCK_SIZE=536870912
-
 # DATA_HDFS="file:///home/whoami/SparkBench" SPARK_MASTER=local[2] MC_List=""
-DATA_HDFS="file:///tmp"
-
+#DATA_HDFS="file:///tmp"
 #Local dataset optional
 #DATASET_DIR=/home/darnell/spark-benchmark/dataset
 
+
+
 SPARK_VERSION=2.0.2  #1.5.1
 [ -z "$SPARK_HOME" ] &&     export SPARK_HOME=$HOME/spark-2.0.1-bin-hadoop2.7
-[ -z "$HADOOP_HOME" ] &&     export HADOOP_HOME=$HOME/hadoop-2.7.3
 
+
+
+#[ -z "$HADOOP_HOME" ] &&     export HADOOP_HOME=$HOME/hadoop-2.7.3
 #SPARK_MASTER=local
 #SPARK_MASTER=local[K]
 #SPARK_MASTER=local[*]
