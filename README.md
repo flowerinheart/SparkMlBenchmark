@@ -13,12 +13,12 @@
     
     Download/checkout Spark-Bench
     
-    Run <SPARK_BENCH_HOME>/bin/build.sh to build Spark-Bench
+    Run $SPARK_BENCH_HOME/bin/build.sh to build Spark-Bench
 
 
 2. Configurations
 
-    Modify <SPARK_BENCH_HOME>/bin/global_env.sh to make sure below variables has been set: 
+    Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set: 
     
         * SPARK_HOME The Spark installation location
         
@@ -29,7 +29,7 @@
     
     run single benchmark by
     
-       ./bin/run-single.sh env/<ALG_ENV>
+       ./bin/run-single.sh env/$ALG_ENV
 
     run all benchmarks by
     
