@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # for prepare #600M example=40G
-CLASS="skydata.spark.benchmark.SVMBenchmark"
 BENCHMARK_NAME="SVM"
+PACKAGE="skydata.spark.benchmark.supervisal"
+CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"

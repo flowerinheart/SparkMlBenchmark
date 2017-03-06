@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
-
-
-BENCHMARK_NAME="Kmeans"
-PACKAGE="skydata.spark.benchmark.supervisal"
+BENCHMARK_NAME="BisectingKMeans"
+PACKAGE="skydata.spark.benchmark.clustering"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
+#for data generate
+
+
 NUM_OF_POINTS=200
-NUM_OF_CLUSTERS=20
-DIMENSIONS=20
+DIMENSIONS=2000
 SCALING=0.6
 NUM_OF_PARTITIONS=30
-DATA_GEN_ARG="${NUM_OF_POINTS} ${NUM_OF_CLUSTERS} ${DIMENSIONS} ${SCALING} ${NUM_OF_PARTITIONS}"
+DATA_GEN_ARG="${NUM_OF_POINTS} ${DIMENSIONS} ${SCALING} ${NUM_OF_PARTITIONS}"
 
 
-
-MAX_ITERATION=20
+#ALG_ARG=
+MAX_ITERATION="30"
 ALG_ARG="${MAX_ITERATION}"

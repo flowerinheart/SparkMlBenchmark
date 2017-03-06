@@ -1,8 +1,10 @@
-import org.apache.spark.mllib.regression.LabeledPoint
-import org.apache.spark.rdd.RDD
-import skydata.spark.benchmark.{MllibSupervisalBenchmark, MllibUnsupervisalBenchmark}
+package skydata.spark.benchmark.clustering
+
 import org.apache.spark.mllib.feature.{ChiSqSelector, ChiSqSelectorModel}
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.rdd.RDD
+import skydata.spark.benchmark.supervisal.MllibSupervisalBenchmark
 
 /**
   * Created by darnell on 17-3-3.

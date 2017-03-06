@@ -1,7 +1,8 @@
+package skydata.spark.benchmark.clustering
+
+import org.apache.spark.mllib.clustering.{BisectingKMeans, BisectingKMeansModel}
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
-import skydata.spark.benchmark.MllibUnsupervisalBenchmark
-import org.apache.spark.mllib.clustering.{BisectingKMeans, BisectingKMeansModel}
 
 /**
   * Created by darnell on 17-3-2.
@@ -18,4 +19,5 @@ object BisectingKMeansBenchmark extends MllibUnsupervisalBenchmark[BisectingKMea
     bkm.run(trainData)
   }
 
+  override def test(model: BisectingKMeansModel, testData: RDD[Vector]): Unit = model.predict(testData)
 }

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-
-
-BENCHMARK_NAME="Kmeans"
+BENCHMARK_NAME="DenseGaussianMixtureBenchmark"
 PACKAGE="skydata.spark.benchmark.supervisal"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
+#DATA_GEN_ARG=
 NUM_OF_POINTS=200
 NUM_OF_CLUSTERS=20
 DIMENSIONS=20
@@ -18,5 +18,6 @@ DATA_GEN_ARG="${NUM_OF_POINTS} ${NUM_OF_CLUSTERS} ${DIMENSIONS} ${SCALING} ${NUM
 
 
 
+#ALG_ARG=
 MAX_ITERATION=20
 ALG_ARG="${MAX_ITERATION}"

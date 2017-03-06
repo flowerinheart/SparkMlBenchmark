@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-CLASS="skydata.spark.benchmark.DecisionTreeClassificationBenchmark"
 BENCHMARK_NAME="DecisionTreeClassification"
+PACKAGE="skydata.spark.benchmark.supervisal"
+CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
 DATA_DIR="${DIR}/data/$BENCHMARK_NAME"

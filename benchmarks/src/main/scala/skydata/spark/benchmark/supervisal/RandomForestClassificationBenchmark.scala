@@ -1,4 +1,5 @@
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.tree.RandomForest
@@ -20,10 +21,8 @@ object RandomForestClassificationBenchmark extends MllibSupervisalBenchmark[Rand
 
 
   override def genData(path : String) : Unit = generateLinearData.map{lp =>
-    new LabeledPoint(lp.label, Vectors.dense(lp.features.toArray.map(Math.abs(_) %
-      algArgTable(N_CLASS).toInt
-    )))
-  }
+    new LabeledPoint(Math.abs(lp.label) % algArgTable(N_CLASS).toInt, lp.features)
+  }.saveAsTextFile(path)
   //subtype  method
   override def train(trainData: RDD[LabeledPoint]): RandomForestModel = {
     val categoricalFeaturesInfo = Map[Int, Int]()

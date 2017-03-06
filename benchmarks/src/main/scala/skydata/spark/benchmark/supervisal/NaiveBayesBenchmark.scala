@@ -1,4 +1,5 @@
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.classification.{NaiveBayes, NaiveBayesModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint

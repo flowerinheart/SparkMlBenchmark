@@ -1,5 +1,6 @@
 
-package skydata.spark.benchmark
+package skydata.spark.benchmark.supervisal
+
 import org.apache.spark.mllib.regression.{LabeledPoint, LinearRegressionModel, LinearRegressionWithSGD}
 import org.apache.spark.rdd.RDD
 

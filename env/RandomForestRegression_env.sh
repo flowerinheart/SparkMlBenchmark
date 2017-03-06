@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 BENCHMARK_NAME="RandomForestRegression"
-PACKAGE="skydata.spark.benchmark"
+PACKAGE="skydata.spark.benchmark.supervisal"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 
 DIR=`dirname "$0"`

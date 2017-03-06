@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 BENCHMARK_NAME="ChiSqSelector"
-PACKAGE="skydata.spark.benchmark"
+PACKAGE="skydata.spark.benchmark.clustering"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 
 DIR=`dirname "$0"`

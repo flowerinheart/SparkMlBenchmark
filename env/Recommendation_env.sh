@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 BENCHMARK_NAME=Recommendation
-PACKAGE="skydata.spark.benchmark"
+PACKAGE="skydata.spark.benchmark.supervisal"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 
 DIR=`dirname "$0"`
@@ -9,10 +9,10 @@ DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
 #for data generate
-NUM_OF_EXAMPLES=200
-EPS=6
-NUM_OF_PARTITIONS=10
-INTERCEPT=0.0
+NUM_OF_EXAMPLES="200"
+EPS="0.6"
+NUM_OF_PARTITIONS="10"
+INTERCEPT="0.0"
 DATA_GEN_ARG="${NUM_OF_EXAMPLES} ${EPS} ${NUM_OF_PARTITIONS} ${INTERCEPT}"
 
 

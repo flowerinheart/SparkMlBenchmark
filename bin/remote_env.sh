@@ -3,7 +3,7 @@
 
 master=10.0.2.22
 #A list of machines where the spark cluster is running
-MC_LIST="10.0.2.21"
+#MC_LIST="10.0.2.21"
 
 [ -z "$HADOOP_HOME" ] && export HADOOP_HOME=/home/skydiscovery/hadoop-2.7.3
 # base dir for DataSet
@@ -11,10 +11,10 @@ HDFS_URL="hdfs://10.0.2.21:9000"
 SPARK_HADOOP_FS_LOCAL_BLOCK_SIZE=536870912
 
 # DATA_HDFS="hdfs://${master}:9000/SparkBench", "file:///home/`whoami`/SparkBench"
-DATA_HDFS="hdfs://10.0.2.21:9000/SparkBenchMark"
+#DATA_HDFS="hdfs://10.0.2.21:9000/SparkBenchMark"
 
 #Local dataset optional
-DATASET_DIR=/disk/sata/sdi/skydiscovery/SparkBenchMark/dataset
+#DATASET_DIR=/disk/sata/sdi/skydiscovery/SparkBenchMark/dataset
 
 SPARK_VERSION=2.0.1
 [ -z "$SPARK_HOME" ] && export SPARK_HOME=/home/skydiscovery/SkyDiscovery/share/spark
