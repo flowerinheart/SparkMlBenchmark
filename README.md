@@ -20,9 +20,9 @@
 
     Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set: 
     
-        * SPARK_HOME The Spark installation location
+    * SPARK_HOME The Spark installation location
         
-        * SPARK_MASTER Spark master  #see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
+    * SPARK_MASTER Spark master  #see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
 3. Run benchmark
