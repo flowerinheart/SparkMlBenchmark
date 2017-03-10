@@ -3,69 +3,78 @@
 ### feature
 * easy to expand
 * automation
+* easy to configure output format
 
 
 ### Getting Started
 
 1. Environment prepare and build
 
-    Setup JDK, Apache Spark runtime environment properly
-    
-    Download/checkout SparkMlBenchmark
-    
-    Run SparkMlBenchmark/bin/build.sh to build 
+    Setup JDK, Apache Spark runtime environment properly(If you want you use this benchmark in cluster mode, also set up alluxio and hadoop).
+
+    Download/git clone SparkMlBenchmark
+
+    Run below commind to build:
+
+      bin/sparkbm.sh build
 
 2. Configurations
 
-    Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set: 
-    
+    Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set:
+
     * SPARK_HOME, The Spark installation path.
-        
+
     * SPARK_MASTER, Spark master, see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
 3. Run benchmark
-    
+
     run single benchmark by
-    
-        ./bin/run-single.sh env/$ALG_ENV
+
+        bin/sparkbm.sh run -f env/$ALG_ENV
 
     run all benchmarks by
-    
-        ./bin/run-all.sh
+
+        bin/sparkbm.sh run
 
 ## Basic Configuration
 All setting can be done by modifying algorithm's env file.
 ### 1. common arguments
-BENCHMARK_NAME will decide your spark app name, data subdirectory's name.
+BENCHMARK_NAME will decide your spark app name, data subdirectory's name, default is "temp".
 
-PACKAGE is your algorithm's scala script's package name.
+PACKAGE is your scala script's package name. You must set it.
 
-DATA_DIR will save your data which generate by spark, default is "ml-benchmark/data/$BENCHMARK_NAME"
+DATA_DIR will save your data which generate by spark, default is "ml-benchmark/data/$BENCHMARK_NAME".
 
-OUTPUT_DIR is directory path, which save your running result, default is "ml-benchmark/result/$BENCHMARK_NAME"
+OUTPUT_DIR is directory path, which save your running result, default is "ml-benchmark/result/$BENCHMARK_NAME".
+
+TIME_FORMAT is for set time measure(e.g.: ms/s/min), default is "ms".
+:
+LOAD_PATTERN decide how to preheat rdd after loading, default is "count".
+
+BLAS decide use which blas implement (e.g.:mkl, openblas, f2j), default is "mkl".
 
 #### Alluxio and HDFS
 When use spark in cluster, you should put data file in dfs(e.g.: hdfs or allixio).
 Firstly, set ALLUXIO_HOME or HADOOP_HOME in global_env.sh.
 Secondly set DATA_DIR in below format:
-alluxio://<master node address>:<master node port>/<path>   or
+alluxio://<master node address>:<master node port>/<path>, e.g: "alluxio://localhost:19998/LICENSE". Here is [alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html)  
 hdfs://<namenodehost>/<path>
 
 
 
 ### 2. data gen arguments
-Your can change your data arguments in algorithm's env file by modify DATA_GEN_ARG, 
+Your can change your data arguments in algorithm's env file by modify DATA_GEN_ARG,
 actually I already split it to more small pieces for you, you only need to care a litter bit variances.
 
-For supervisal algorithm, if you inherit MllibSupervisalBenchmark in your scala script, the data format will be 
+For supervisal algorithm, if you inherit MllibSupervisalBenchmark in your scala script, the data format will be
 RDD[LabeledPoint], I use mllib.util.LinearDataGenerator to generate data, which use a probabilitical model.You just nned to modify three variances:
 * NUM_OF_EXAMPLES    number of samples, eg [[1, 2, 3], [4, 5, 6]] will be 2
 * NUM_OF_FEATURES    number of feature, eg [[1, 2, 3], [4, 5, 6]] wiil be 3
 * NUM_OF_PARTITIONS  partitions of RDD
 
-For clustering algorithm, if you inherit MllibUnsupervisalBenchmark 
-in your scala script, the data format will be RDD[Vector], I use 
+For clustering algorithm, if you inherit MllibUnsupervisalBenchmark
+in your scala script, the data format will be RDD[Vector], I use
 mllib.util.KMeansDataGenerator to generate data.You should care:
 * NUM_OF_POINTS         #like NUM_OF_EXAMPLES
 * NUM_OF_CLUSTERS       #number of clusters, eg If you want split data to two category, it will be 2.
@@ -73,7 +82,7 @@ mllib.util.KMeansDataGenerator to generate data.You should care:
 * NUM_OF_PARTITIONS   # like above
 
 #### Carefully!!!!
-One feature of my benchmark is that spark will re-generate data and delete this algorithm's result file(not stat file) if your change DATA_GEN_ARG, 
+One feature of my benchmark is that spark will re-generate data and delete this algorithm's result file(not stat file) if your change DATA_GEN_ARG,
 so if you add extra metrics, you should save result file firstly.
 ### 3. algorithm configure
 You should read spark's mllib's document in [here](https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.mllib.package).
@@ -82,48 +91,48 @@ And then you can modify algorithm arguments in algorithm's env file according do
 
 
 ## Advanced Configuration
-If you want to change blas\arpack\lapack(eg openblas, mkl) or set spark's runtime arguments(eg SPARK_EXECUTOR_MEMORY) or 
+If you want to change blas\arpack\lapack(eg openblas, mkl) or set spark's runtime arguments(eg SPARK_EXECUTOR_MEMORY) or
 change result format(eg change traintime measure from s to ms), this section will help your.
- 
- 
+
+
 ### BLAS
 If you want to set blas to MKL, first you should install mkl in your machine, maybe you have to see [this](https://brucebcampbell.wordpress.com/2014/12/04/setting-up-native-atlas-with-netlib-java/) to achieve that.
 Next you don't need to do anything because MKL is default runtime blas in this benchmark.
- 
+
 For F2j blas in netlib-java, set BLAS environment variance to "F2j" in your algorithm's configuration file.
- 
+
 For other's native blas, you should install it like mkl(your should choice only one) and do nothing else.
- 
- 
+
+
 ### spark runtime configure
 Firstly, you should read [spark configuration document](http://spark.apache.org/docs/latest/configuration.html) and [spark submmit doc](http://spark.apache.org/docs/latest/submitting-applications.html)
- 
+
 This benchmark current only support these spark's arguments:
- 
+
 * SPARK_EXECUTOR_MEMORY
 * SPARK_SERIALIZER
 * SPARK_RDD_COMPRESS
 * SPARK_IO_COMPRESSION_CODEC
 * SPARK_DEFAULT_PARALLELISM
- 
- 
+
+
 You can set them in your algorithm's env file.
- 
+
 Actually you also can set other arguments in algorithm's env file but a litter troublesome, eg:SPARK_OPT="${SPARK_OPT} --conf spark.exeutor.memory=4g"
- 
- 
- 
- 
+
+
+
+
 ### Change your result file's format
 Time format can be change by set in your algorithm's env file, eg:
 TIME_FORMAT="ms"   #only support ms,s,min
-   
-Actually you can add extra metrics in your algorithm result file.For example, I want to see different 
+
+Actually you can add extra metrics in your algorithm result file.For example, I want to see different
 performance between mkl and f2j blas, just try these steps:
- 
+
 #### 1.Add a new metrics "blas" in your algorithm's scala source code like:
- 
- 
+
+
 ```
 object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[GaussianMixtureModel]{
   val BLAS = "blas"
@@ -137,13 +146,13 @@ object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[Gaussian
 
 
 #### 2. run algorithm under different blas
-Run "SBM clean result $ALGNAME". Append "BLAS=F2j" in algorithm's env file and run this benchmark, and you will see that result file have another 
+Run "SBM clean result $ALGNAME". Append "BLAS=F2j" in algorithm's env file and run this benchmark, and you will see that result file have another
 col calls "blas" and a new record.
 
 Remove "BLAS=F2j" in algorithm's env file and run this benchmark, and you will see that two result record
 with different blas metrics in result file.
 
-    
+
 
 
 
@@ -165,10 +174,10 @@ in env file.
     * load(dataPath)       #load  data from dataPath which is generated from geneData method, and split it to trainData and testData
     * train(trainData)     #use trainData and arguments to build model, your can get algorithm's arguments from variance algArgTable
     * test(model, testData)       #use model to predict testData
-    
+
     SparkMLBenchmark don't provide default implement of them, other two provide default implement for
 genData, load, test.
-  
+
     Next you can choice one to inherit or read their doc and api to help your decision.
 3. override argument name's list like below:
 
@@ -177,16 +186,15 @@ genData, load, test.
   override lazy val dataGenArgNames = Array(N_CIR, N_POINTS)
   override lazy val algArgNames = Array(N_CLUSTERS, MAX_ITER, INIT_MODE)
     ```
-    
+
     Be carefully that lazy is necessary .
 
 
 4. implement abstract method:
-     
+
 
 
 
 ### Environment file
-ml-benchmark/env/template has provide two template file for clustering and 
+ml-benchmark/env/template has provide two template file for clustering and
 supervisal algorithm, just set all necessary arguments.
-
