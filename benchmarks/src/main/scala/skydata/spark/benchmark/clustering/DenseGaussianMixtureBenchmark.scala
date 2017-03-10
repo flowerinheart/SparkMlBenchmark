@@ -10,6 +10,10 @@ import org.apache.spark.rdd.RDD
 object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[GaussianMixtureModel]{
 
 
+  val BLAS = "blas"
+  addMetrics(("blas", "BLAS"))
+  override lazy val algArgNames = Array(BLAS)
+
   val CONTOL = Key("convergenceTol")
   override lazy val algArgNames = Array(CONTOL, MAX_ITER)
 

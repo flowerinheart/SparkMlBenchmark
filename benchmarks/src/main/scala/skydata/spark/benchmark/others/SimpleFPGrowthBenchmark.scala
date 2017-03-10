@@ -7,7 +7,7 @@ import skydata.spark.benchmark.SparkMlBenchmark
 /**
   * Created by darnell on 17-3-6.
   */
-object SimpleFPGrowthBenchmark extends SparkMlBenchmark[RDD[Array[String]], FPGrowthModel[String]]{
+object SimpleFPGrowthBenchmark extends SparkMlBenchmark[Array[String], FPGrowthModel[String]]{
   //subtype  method
   val MAX_LEN = Key("max_len")
   val N_TRAN = Key("num_transaction")
@@ -43,7 +43,7 @@ object SimpleFPGrowthBenchmark extends SparkMlBenchmark[RDD[Array[String]], FPGr
 
   override def train(trainData: RDD[Array[String]]): FPGrowthModel[String] ={
     val model = new FPGrowth()
-    set_alg_arg((s) => model.setMinSupport(s.toInt), MIN_SUP)
+    setAlgArg((s) => model.setMinSupport(s.toInt), MIN_SUP)
     model.run(trainData)
   }
 

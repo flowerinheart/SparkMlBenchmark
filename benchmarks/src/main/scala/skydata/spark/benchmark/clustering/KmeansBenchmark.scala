@@ -25,7 +25,7 @@ import skydata.spark.benchmark.SparkMlBenchmark
 
 
 
-object KmeansBenchmark extends SparkMlBenchmark[RDD[Vector], KMeansModel](){
+object KmeansBenchmark extends SparkMlBenchmark[Vector, KMeansModel](){
 
   val NUM_CLUSTERS = Key("clusters")
   val MAX_ITERATION = Key("iteration")

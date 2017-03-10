@@ -15,78 +15,12 @@
 # limitations under the License.
 
 ############### common functions ################
-function timestamp() {
-    sec=`date +%s`
-    nanosec=`date +%N`
-
-    # %N is not supported in OSX. Use gdate from `coreutils` suite instead.
-    unamestr=`uname`
-    if [ "${unamestr}" = "Darwin" ]; then
-        nanosec=`gdate  +%N`
-    fi
-
-    tmp=`expr $sec \* 1000 `
-    msec=`expr $nanosec / 1000000 `
-    echo `expr $tmp + $msec`
+function check_dir(){
+  if [ ! -d $1  ]; then
+    echo "dir = $1"
+    mkdir -p $1
+  fi
 }
-
-function get_report_field_name() {
-    echo -n "Apptype,start_ts,duration,size,throughput,resStatus"
-}
-
-function gen_report() {
-    if [ $# -lt 6 ];then echo "error: gen_report input variables less than 6"; return 1; fi
-    local type=$1
-    local start=$2
-    local end=$3
-    local size=$4
-	local start_ts=$5
-    local res=$6
-    which bc > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
-        echo "\"bc\" utility missing. Please install it to generate proper report."
-        return 1
-    fi
-    local size=`echo "scale=6;$size/1024/1024"|bc`
-	local duration=`echo "scale=6;($end-$start)/1000"|bc`
-    local tput=`echo "scale=6;$size/$duration"|bc`
-    echo -n "$type,${start_ts},$duration,$size,$tput,$res"
-
-}
-
-function check_dir() {
-    local dir=$1
-    if [ -z "$dir" ];then
-        echo "WARN: payload missing."
-        return 1
-    fi
-    if [ ! -d "$dir" ];then
-        echo "ERROR: directory $dir does not exist."
-        exit 1
-    fi
-}
-
-#usage purge_date "${MC_LIST}"
-function purge_data() {
-	local mc_list="$1"
-    if [ -z "${mc_list}" ];then
-        return 1
-    fi
-	cmd="echo 3 >/proc/sys/vm/drop_caches";
-	#echo ${mc_list}
-	for nn in ${mc_list}; do
-	#echo $nn
-	#ssh -t $nn "sudo sh -c \"$cmd\"";
-	ssh -tt $nn "sudo sh -c \"$cmd\"";
-	done;
-	echo "date purged on ${mc_list}"
-}
-
-function get_start_ts() {
-   ts=`ssh ${master} "date +%F-%T"`
-   echo $ts
-}
-
 function setup() {
   if [ "${MASTER}" = "spark" ] && [ "${RESTART}" = "TRUE" ] ; then
     "${SPARK_HOME}/sbin/stop-all.sh"
@@ -104,25 +38,20 @@ function teardown() {
 function set_Java_OPT(){
     SPARK_OPT="${SPARK_OPT} --conf "'"'"spark.executor.extraJavaOptions=${SPARK_EXECUTOR_JVM_OPT}"'"'
     SPARK_OPT="${SPARK_OPT} --conf "'"'"spark.driver.extraJavaOptions=${SPARK_DRIVER_JVM_OPT}"'"'
-    echo "SPARK_OPT=$SPARK_OPT"
 }
-function set_MKL(){
-    if [[ $1 = "--MKL" ]]; then
+function set_blas(){
+    if [[ $1 = "NATIVE" ]]; then
          if [[ -z "$NativeBLASOPT" ]]; then
             echo "WARN: NativeBLASOpt not set"
          fi
-         BLAS="MKL"
          SPARK_EXECUTOR_JVM_OPT="$NativeBLASOPT $SPARK_EXECUTOR_JVM_OPT"
          SPARK_DRIVER_JVM_OPT="$NativeBLASOPT $SPARK_DRIVER_JVM_OPT"
-         return 0
     else
          SPARK_EXECUTOR_JVM_OPT="$F2jBLASOPT $SPARK_EXECUTOR_JVM_OPT"
          SPARK_DRIVER_JVM_OPT="$F2jBLASOPT $SPARK_DRIVER_JVM_OPT"
-         return 1
     fi
 }
 function set_gendata_opt() {
-  SPARK_OPT=
   if [ ! -z "$SPARK_EXECUTOR_MEMORY" ]; then
     SPARK_OPT="${SPARK_OPT} --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY}"
     echo "memory=$SPARK_EXECUTOR_MEMORY"
@@ -241,36 +170,37 @@ function  CPTO() {
 
 
 function run_benchmark() {
-# set algorithm enviroment variable
-DIR=`dirname "$0"`
-DIR=`cd "$DIR"/..; pwd`
-. "$1"
-OPTION="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${DATA_GEN_ARG} ${ALG_ARG}"
+    # set algorithm enviroment variable
+    DATA_DIR="./data/temp"
+    OUTPUT_DIR="./result/temp"
+    BENCHMARK_NAME="temp"
+    TIME_FORMAT="ms"
+    LOAD_PATTERN="count"
+    BLAS="NATIVE"
+    . "$1"
+
+
+    COMMON_ARG="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN}"
+    OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
 
 
 
-#DU ${INPUT_HDFS} SIZE
-# prepare spark opt
-check_dir $DATA_DIR 
-check_dir $OUTPUT_DIR
-set_gendata_opt
-set_run_opt
-set_MKL --MKL
-set_Java_OPT
-setup
+    #DU ${INPUT_HDFS} SIZE
+    # prepare spark opt
+    check_dir $DATA_DIR
+    check_dir $OUTPUT_DIR
+    set_gendata_opt
+    set_run_opt
+    set_blas $BLAS
+    set_Java_OPT
+    setup
 
-# remove data file
-#RM ${OUTPUT_HDFS}
+    # remove data file
+    #RM ${OUTPUT_HDFS}
 
-#echo $OUTPUT_DIR && exit 0
-JAR="${DIR}/benchmarks/target/spark.benchmarks-${BENCH_VERSION}.jar"
-echo_and_run sh -c " ${SPARK_HOME}/bin/spark-submit --name ${CLASS} --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR} ${OPTION}"
+    #echo $OUTPUT_DIR && exit 0
+    JAR="${DIR}/benchmarks/target/spark.benchmarks-${BENCH_VERSION}.jar"
+    echo_and_run sh -c " ${SPARK_HOME}/bin/spark-submit --name ${BENCHMARK_NAME} --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR} ${OPTION}"
 }
 
 
-function check_dir(){
-  if [ ! -d $1  ]; then
-    echo "dir = $1"
-    mkdir $1
-  fi
-}

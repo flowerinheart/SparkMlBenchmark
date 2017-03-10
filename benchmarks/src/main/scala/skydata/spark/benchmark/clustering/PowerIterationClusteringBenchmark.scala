@@ -11,7 +11,6 @@ object PowerIterationClusteringBenchmark extends MllibUnsupervisalBenchmark[Powe
 
 
   val N_CIR = Key("n_circles")
-
   val INIT_MODE = Key("initializationMode")
   override lazy val dataGenArgNames = Array(N_CIR, N_POINTS)
   override lazy val algArgNames = Array(N_CLUSTERS, MAX_ITER, INIT_MODE)

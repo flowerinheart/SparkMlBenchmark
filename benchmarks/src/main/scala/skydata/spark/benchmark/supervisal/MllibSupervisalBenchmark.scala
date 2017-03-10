@@ -12,7 +12,7 @@ import skydata.spark.benchmark.SparkMlBenchmark
 
 
 
-abstract class MllibSupervisalBenchmark[M] extends SparkMlBenchmark[RDD[LabeledPoint], M]{
+abstract class MllibSupervisalBenchmark[M] extends SparkMlBenchmark[LabeledPoint, M]{
   //help data and func
   val N_EXAMPLES = Key("num_of_examples")
   val N_FEATURES = Key("num_of_features")

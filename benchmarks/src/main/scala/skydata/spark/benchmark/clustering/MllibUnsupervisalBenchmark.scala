@@ -8,7 +8,7 @@ import org.apache.spark.mllib.util.KMeansDataGenerator
 import org.apache.spark.rdd.RDD
 import skydata.spark.benchmark.SparkMlBenchmark
 
-abstract class MllibUnsupervisalBenchmark[M] extends SparkMlBenchmark[RDD[Vector], M] {
+abstract class MllibUnsupervisalBenchmark[M] extends SparkMlBenchmark[Vector, M] {
   val N_POINTS = Key("points")
   val N_CLUSTERS = Key("clusters")
   val DIMENSTION = Key("dimenstion")

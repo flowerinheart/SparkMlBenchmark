@@ -66,13 +66,10 @@ SPARK_EXECUTOR_MEMORY=20G
 
 
 
-BLAS="F2J"
 NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLASWrapper -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACKWrapper -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.NativeSystemARPACKWrapper"
 #NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fomil.netlib.NativeSystemARPACK"
 F2jBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jSystemARPACK"
 
-SPARK_EXECUTOR_JVM_OPT=""
-SPARK_DRIVER_JVM_OPT=""
 
 
 EVENT_LOG_DIR_ON_HDFS="/spark/event"
@@ -80,7 +77,9 @@ EVENT_LOG_BACKUP_DIR_ON_HDFS="/spark/backup/event"
 REPORT_DIR_ON_HDFS="/SparkBenchMark/report"
 EVENT_LOG_LOCAL_DIR_TMP="/disk/sata/sdi/skydiscovery/spark/event/tmp"
 
-
+SPARK_EXECUTOR_JVM_OPT=""
+SPARK_DRIVER_JVM_OPT=""
+SPARK_OPT=""
 
 
 
