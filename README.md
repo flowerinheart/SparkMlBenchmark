@@ -112,9 +112,9 @@ Time format can be change by set in your algorithm's env file, eg:
 TIME_FORMAT="ms"   #only support ms,s,min
    
 Actually you can add extra metrics in your algorithm result file.For example, I want to see different 
-performance among mkl and f2j blas, just try these steps:
+performance between mkl and f2j blas, just try these steps:
  
-#### 1.Add metrics in your algorithm's scala source code like:
+#### 1.Add a new metrics "blas" in your algorithm's scala source code like:
  
  
 ```
@@ -129,9 +129,10 @@ object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[Gaussian
 ```
 
 
-#### 2. run algorithm under F2j
+#### 2. run algorithm under different blas
 Run "SBM clean result $ALGNAME". Append "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that result file have another 
 col calls "blas" and a new record.
+
 Run "SBM clean result $ALGNAME", remove "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that two result record
 with different blas metrics in result file.
 
