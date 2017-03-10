@@ -11,31 +11,30 @@
 
     Setup JDK, Apache Spark runtime environment properly
     
-    Download/checkout Spark-Bench
+    Download/checkout SparkMlBenchmark
     
-    Run $SPARK_BENCH_HOME/bin/build.sh to build Spark-Bench
-
+    Run SparkMlBenchmark/bin/build.sh to build 
 
 2. Configurations
 
     Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set: 
     
-    * SPARK_HOME The Spark installation location
+    * SPARK_HOME, The Spark installation path.
         
-    * SPARK_MASTER Spark master  #see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
+    * SPARK_MASTER, Spark master, see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
 3. Run benchmark
     
     run single benchmark by
     
-       ./bin/run-single.sh env/$ALG_ENV
+        ./bin/run-single.sh env/$ALG_ENV
 
     run all benchmarks by
     
-       ./bin/run-all.sh
+        ./bin/run-all.sh
 
-## Basic Algorithm's Configuration
+## Basic Configuration
 All setting can be done by modifying algorithm's env file.
 ### 1. common arguments
 BENCHMARK_NAME will decide your spark app name, data subdirectory's name.
@@ -66,8 +65,9 @@ mllib.util.KMeansDataGenerator to generate data.You should care:
 * DIMENSIONS            #just like NUM_OF_FEATURES.
 * NUM_OF_PARTITIONS   # like above
 
-Carefully!!!!
+#### Carefully!!!!
 One feature of my benchmark is that spark will re-generate data and delete this algorithm's result file(not stat file) if your change DATA_GEN_ARG, 
+so if you add extra metrics, you should save result file firstly.
 ### 3. algorithm configure
 You should read spark's mllib's document in [here](https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.mllib.package).
 And then you can modify algorithm arguments in algorithm's env file according doc.
@@ -75,19 +75,17 @@ And then you can modify algorithm arguments in algorithm's env file according do
 
 
 ## Advanced Configuration
-If you want to change blas\arpack\lapack(eg. openblas, mkl) or set
- spark's runtime arguments(eg. SPARK_EXECUTOR_MEMORY) or change result format(eg change
- traintime measure from s to ms), this section will help your
+If you want to change blas\arpack\lapack(eg. openblas, mkl) or set spark's runtime arguments(eg. SPARK_EXECUTOR_MEMORY) or 
+change result format(eg change traintime measure from s to ms), this section will help your
  
  
 ### BLAS
 If you want to set blas to MKL, first you should install mkl in your machine, maybe you have to see [this](https://brucebcampbell.wordpress.com/2014/12/04/setting-up-native-atlas-with-netlib-java/) to achieve that.
-Next you can do nothing because MKL is default runtime blas in this benchmark.
+Next you don't need to do anything because MKL is default runtime blas in this benchmark.
  
-For F2j blas in netlib-java, set BLAS environment variance to 
-"F2j" in your algorithm's configuration file.
+For F2j blas in netlib-java, set BLAS environment variance to "F2j" in your algorithm's configuration file.
  
-For other's native blas, you should install it like mkl(your should choice only one) and do nothing
+For other's native blas, you should install it like mkl(your should choice only one) and do nothing else.
  
  
 ### spark runtime configure
@@ -109,7 +107,7 @@ Actually you also can set other arguments in algorithm's env file but a litter t
  
  
  
-### Result file
+### Change your result file's format
 Time format can be change by set in your algorithm's env file, eg:
 TIME_FORMAT="ms"   #only support ms,s,min
    
