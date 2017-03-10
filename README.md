@@ -75,8 +75,8 @@ And then you can modify algorithm arguments in algorithm's env file according do
 
 
 ## Advanced Configuration
-If you want to change blas\arpack\lapack(eg. openblas, mkl) or set spark's runtime arguments(eg. SPARK_EXECUTOR_MEMORY) or 
-change result format(eg change traintime measure from s to ms), this section will help your
+If you want to change blas\arpack\lapack(eg openblas, mkl) or set spark's runtime arguments(eg SPARK_EXECUTOR_MEMORY) or 
+change result format(eg change traintime measure from s to ms), this section will help your.
  
  
 ### BLAS
@@ -130,9 +130,10 @@ object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[Gaussian
 
 
 #### 2. run algorithm under F2j
-Run "SBM clean result $ALGNAME", write "BLAS="F2j" in algorithm's env file, run it, and your will see run result have another 
-metrics "blas".
-Run "SBM clean result $ALGNAME", remove "BLAS="F2j" in algorithm's env file, run it, and your will see two result record with different blas metrics.
+Run "SBM clean result $ALGNAME". Append "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that result file have another 
+col calls "blas" and a new record.
+Run "SBM clean result $ALGNAME", remove "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that two result record
+with different blas metrics in result file.
 
     
 
@@ -176,7 +177,7 @@ genData, load, test.
 
 
 
-### 2. envirment file
+### Environment file
 ml-benchmark/env/template has provide two template file for clustering and 
 supervisal algorithm, just set all necessary arguments.
 
