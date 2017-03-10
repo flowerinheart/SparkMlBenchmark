@@ -16,10 +16,20 @@
 
 ############### common functions ################
 function check_dir(){
-  if [ ! -d $1  ]; then
-    echo "dir = $1"
-    mkdir -p $1
-  fi
+  case `basename $1` in
+    alluxio:*)
+      $ALLUXIO_HOME/bin/alluxio mkdir $1
+      ;;
+    hdfs:*)
+      $HADOOP_HOME/bin/hadoop mkdir $1
+      ;;
+    *)
+      if [ ! -d $1  ]; then
+        echo "dir = $1"
+        mkdir -p $1
+      fi
+      ;;
+  esac
 }
 function setup() {
   if [ "${MASTER}" = "spark" ] && [ "${RESTART}" = "TRUE" ] ; then
@@ -179,7 +189,9 @@ function run_benchmark() {
     BLAS="NATIVE"
     . "$1"
 
-
+    CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+    DATA_DIR="${BENCH_HOME}/data/$BENCHMARK_NAME"
+    OUTPUT_DIR="${BENCH_HOME}/result"
     COMMON_ARG="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN}"
     OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
 

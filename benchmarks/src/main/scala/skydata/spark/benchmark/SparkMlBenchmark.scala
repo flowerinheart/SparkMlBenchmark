@@ -149,6 +149,7 @@ abstract class SparkMlBenchmark[T, M]() {
     checkAndSetHead(new File(makePath(Array(outputDir, "stat.csv"))), algArgNames ++ timeHead ++ extraAlgHead)
   }
 
+  /** Set up environment and do four main process: genData, load, train, test.Finally output result to OUTPUT_DIR*/
   private def run(args : Array[String]) : Unit = {
     //prepare arguments and local file system's enviroment for running algorithm
     parseArgs(args)
@@ -224,10 +225,16 @@ abstract class SparkMlBenchmark[T, M]() {
   def load(dataPath : String) : (RDD[T], RDD[T])
 
   /**
-    *
-    * @param trainData
-    * @return
+    * Train model from trainData and you should parse arguments from algArgTable to configure model.
+    * @param trainData  trainData provide by load method.
+    * @return model that has been trained.
     */
   def train(trainData : RDD[T]) : M
+
+  /**
+    * Predict respone of testData by model.
+    * @param model  model from train method.
+    * @param testData testData from load method.
+    */
   def test(model : M, testData : RDD[T]) : Unit
 }

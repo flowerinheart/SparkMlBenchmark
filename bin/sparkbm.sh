@@ -1,6 +1,32 @@
 #!/usr/bin/env bash
 this=$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
 [ -z "$BENCH_HOME" ] && export BENCH_HOME="${this}/.."
+
+function run {
+    case $1 in
+    "-f")
+        run_benchmark $2
+        ;;
+    "")
+        for file in ${BENCH_HOME}/env/*; do
+            if [ -f $file ]; then
+                run_benchmark $file
+            fi
+        done
+        ;;
+    *)
+        echo "Unknown run opt"
+        echo "You can use sparkbm like"
+        echo "sparkbm run -h for help"
+        echo "sparkbm run                                  # run all algorithm define in env dir"
+        echo "sparkbm run -f [benchmark env file]          # run algorithm according env file"
+
+        ;;
+
+
+    esac
+}
+
 function clean {
     case $1 in
     "result")
@@ -37,3 +63,26 @@ function clean {
         ;;
     esac
 }
+
+
+
+case $1 in
+"run")
+    shift
+    run $@
+    ;;
+"clean")
+    shift
+    clean $@
+    ;;
+"build")
+    cd ${BENCH_HOME}/benchmarks
+    mvn clean package
+    cd ..
+    ;;
+*)
+    echo "Unknown option!"
+    echo "sparkbm run -h                     # get help for run benchmark"
+    echo "sparkbm clean -h                   # get help for clean"
+    ;;
+esac

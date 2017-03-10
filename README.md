@@ -45,6 +45,13 @@ DATA_DIR will save your data which generate by spark, default is "ml-benchmark/d
 
 OUTPUT_DIR is directory path, which save your running result, default is "ml-benchmark/result/$BENCHMARK_NAME"
 
+#### Alluxio and HDFS
+When use spark in cluster, you should put data file in dfs(e.g.: hdfs or allixio).
+Firstly, set ALLUXIO_HOME or HADOOP_HOME in global_env.sh.
+Secondly set DATA_DIR in below format:
+alluxio://<master node address>:<master node port>/<path>   or
+hdfs://<namenodehost>/<path>
+
 
 
 ### 2. data gen arguments
@@ -130,10 +137,10 @@ object DenseGaussianMixtureBenchmark extends MllibUnsupervisalBenchmark[Gaussian
 
 
 #### 2. run algorithm under different blas
-Run "SBM clean result $ALGNAME". Append "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that result file have another 
+Run "SBM clean result $ALGNAME". Append "BLAS=F2j" in algorithm's env file and run this benchmark, and you will see that result file have another 
 col calls "blas" and a new record.
 
-Run "SBM clean result $ALGNAME", remove "BLAS="F2j" in algorithm's env file and run this benchmark, and you will see that two result record
+Remove "BLAS=F2j" in algorithm's env file and run this benchmark, and you will see that two result record
 with different blas metrics in result file.
 
     
@@ -144,7 +151,8 @@ with different blas metrics in result file.
 ### algorithm script file
 Mainly four steps:
 
-1. Create algorithm script in benchmark/src/main/scala/skydata.spark.benchmark.
+1. Create algorithm script in benchmark/src/main/scala/skydata.spark.benchmark and name it XXXBenchmark, e.g.:KmeansBenchmark, and set BENCHMARK_NAME=Kmeans
+in env file.
 2. Inherit one abstract class
 
     Actually, this benchmark framework provide three abstract class to help you build benchmark.
