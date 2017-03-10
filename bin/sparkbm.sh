@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 this=$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
-[ -z "$BENCH_HOME" ] && export BENCH_HOME="${this}/.."
+. ${this}/global_config.sh
 
 function run {
     case $1 in
     "-f")
+        if [ "$3" == "-s" ]; then
+            GEN_DATA="no"
+        fi
         run_benchmark $2
         ;;
     "")
@@ -15,11 +18,11 @@ function run {
         done
         ;;
     *)
-        echo "Unknown run opt"
         echo "You can use sparkbm like"
         echo "sparkbm run -h for help"
         echo "sparkbm run                                  # run all algorithm define in env dir"
-        echo "sparkbm run -f [benchmark env file]          # run algorithm according env file"
+        echo "sparkbm run -f [benchmark env file]          # run algorithm according env file and generate data every time"
+        echo "sparkbm run -f [benchmark env file] -s          # run algorithm according env file and don't generate data every time"
 
         ;;
 
@@ -32,7 +35,9 @@ function clean {
     "result")
         case $2 in
         "")
-            rm "${BENCH_HOME}/result/*"
+            for file in ${BENCH_HOME}/result/*;do
+                rm $file
+            done
             ;;
         *)
             rm "${BENCH_HOME}/${2}.csv"
@@ -54,8 +59,7 @@ function clean {
         rm -r "${BENCH_HOME}/result/*"
         ;;
     *)
-        echo "Unknown clean object"
-        echo "You can use sparkbm like"
+        echo "You can use sparkbm clean like"
         echo "sparkbm clean -h for help"
         echo "sparkbm clean                                  # clean all file in data and result dir"
         echo "sparkbm clean data [benchmark name]            # clean data dir(when no benchmark name) or clean benchmark dir under data dir"
@@ -81,7 +85,7 @@ case $1 in
     cd ..
     ;;
 *)
-    echo "Unknown option!"
+    echo "You can use sparkbm like"
     echo "sparkbm run -h                     # get help for run benchmark"
     echo "sparkbm clean -h                   # get help for clean"
     ;;

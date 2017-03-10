@@ -82,6 +82,6 @@ SPARK_DRIVER_JVM_OPT=""
 SPARK_OPT=""
 
 
-#ALLUXIO_HOME=""
+ALLUXIO_HOME="$HOME/exercitation/alluxio_and_hadoop/alluxio"
 #HADOOP_HOME=""
 

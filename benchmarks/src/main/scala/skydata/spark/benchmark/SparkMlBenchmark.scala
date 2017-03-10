@@ -34,15 +34,16 @@ abstract class SparkMlBenchmark[T, M]() {
   val BENCHMARK_NAME = "benchmark"
   val TIME_FORMAT = "time_format"
   val LOAD_PATTERN = "load_pattern"
+  val IS_GENDATA = "gen_data"
 
   type ArgTable = collection.mutable.HashMap[Key, String]
   protected val commonArgTable: ArgTable = new ArgTable()
   protected val dataGenArgTable: ArgTable = new ArgTable()
   protected val algArgTable: ArgTable = new ArgTable()
 
-  private[benchmark] lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN)
-  private[benchmark] lazy val algArgNames : Array[Key] = Array()
-  private[benchmark] lazy val dataGenArgNames : Array[Key] = Array()
+  lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN, IS_GENDATA)
+  lazy val algArgNames : Array[Key] = Array()
+  lazy val dataGenArgNames : Array[Key] = Array()
 
   import util.Random.nextString
   commonArgTable.put(BENCHMARK_NAME, nextString(20))
@@ -97,37 +98,37 @@ abstract class SparkMlBenchmark[T, M]() {
           case false => throw new RuntimeException("could not create dir: " + path)
         }
     }
-    checkAndCreateDir(dataDir)
+//    checkAndCreateDir(dataDir)
     checkAndCreateDir(outputDir)
     /** check data dir*/
-    val manifestFile = new File(makePath(Array(dataDir, "manifest.csv")))
-    val checkManifest = () => {/** return is data arg change compare to manifest file in data_dir*/
-      if(!manifestFile.exists())
-        false
-      else {
-        val scanner = new Scanner(manifestFile)
-        val keys = scanner.nextLine().split(",")
-        val values = scanner.nextLine().split(",")
-        keys zip values forall ((pair) => dataGenArgTable(// check is data gen arguments same as before
-          dataGenArgNames.find(_.toString == pair._1).get) == pair._2)
-      }
-    }
-    if(! checkManifest()){
+//    val manifestFile = new File(makePath(Array(dataDir, "manifest.csv")))
+//    val checkManifest = () => {/** return is data arg change compare to manifest file in data_dir*/
+//      if(!manifestFile.exists())
+//        false
+//      else {
+//        val scanner = new Scanner(manifestFile)
+//        val keys = scanner.nextLine().split(",")
+//        val values = scanner.nextLine().split(",")
+//        keys zip values forall ((pair) => dataGenArgTable(// check is data gen arguments same as before
+//          dataGenArgNames.find(_.toString == pair._1).get) == pair._2)
+//      }
+//    }
+    if(commonArgTable(IS_GENDATA) == "yes"){
       // delete rdd data in $DATA_DIR/data and generate new data
-      val deleteDir = (file : File) => {
-        file.listFiles.foreach({subFile =>
-          if(subFile.isDirectory)
-            deleteDir(subFile)
-          subFile.delete()
-        })
-      }
-      deleteDir(new File(dataDir))
-      val pt = new PrintWriter(manifestFile)
-      val dataArgKey = dataGenArgTable.keySet.toArray.sorted
-      pt.println(dataArgKey.map(_.toString).mkString(","))
-      pt.println(dataArgKey.map(dataGenArgTable(_)).mkString(","))
-      pt.close()
-      genData(makePath(Array(dataDir, "data")))
+//        def deleteDir(file : File) : Unit = {
+//        file.listFiles.foreach({subFile =>
+//          if(subFile.isDirectory)
+//            deleteDir(subFile)
+//          subFile.delete()
+//        })
+//      }
+//      deleteDir(new File(dataDir))
+//      val pt = new PrintWriter(manifestFile)
+//      val dataArgKey = dataGenArgTable.keySet.toArray.sorted
+//      pt.println(dataArgKey.map(_.toString).mkString(","))
+//      pt.println(dataArgKey.map(dataGenArgTable(_)).mkString(","))
+//      pt.close()
+      genData(dataDir)
     }
     //  check result files
     val checkAndSetHead = (f : File, head : Array[String]) => {
@@ -140,13 +141,13 @@ abstract class SparkMlBenchmark[T, M]() {
           preHead.zip(head).forall((t) => t._1 == t._2)
       }
       if(!flag) {
-        val pt = new PrintWriter(new FileWriter(f))
+        val pt = new PrintWriter(f)
         pt.println(head mkString ",")
         pt.close()
       }
     }
-    checkAndSetHead(new File(makePath(Array(outputDir, benchmarkName + ".csv"))), "modelName" +: timeHead)
-    checkAndSetHead(new File(makePath(Array(outputDir, "stat.csv"))), algArgNames ++ timeHead ++ extraAlgHead)
+    checkAndSetHead(new File(makePath(Array(outputDir, "stat.csv"))), "modelName" +: timeHead)
+    checkAndSetHead(new File(makePath(Array(outputDir, benchmarkName + ".csv"))), algArgNames ++ timeHead ++ extraAlgHead)
   }
 
   /** Set up environment and do four main process: genData, load, train, test.Finally output result to OUTPUT_DIR*/
@@ -156,7 +157,6 @@ abstract class SparkMlBenchmark[T, M]() {
     val dataDir = extractCommon(DATA_DIR_KEY)
     val outputDir = extractCommon(OUTPUT_DIR_KEY)
     val benchmarkName = extractCommon(BENCHMARK_NAME)
-    val rddDir = makePath(Array(dataDir, "data"))
     prepareEnvironment(dataDir, outputDir, benchmarkName)
     //algorithm's main processes
     val (loadTime, (trainData, testData)) = recordTime_1((path : String) => {
@@ -167,17 +167,17 @@ abstract class SparkMlBenchmark[T, M]() {
         t2.count()
       }
       (t1, t2)
-    })(rddDir)
+    })(dataDir)
     val (trainTime, model) = recordTime_1(train)(trainData)
     val (testTime, _) = recordTime_2(test)(model,testData)
     // generate algorthim self's result file and all algorithm's stat file(only algorithm name and times)
-    val statPrinter = new PrintWriter(new FileWriter(makePath(Array(outputDir, benchmarkName + ".csv"))), true)
-    val singlePrinter = new PrintWriter(new FileWriter(makePath(Array(outputDir, "stat.csv"))), true)
+    val singlePrinter = new PrintWriter(new FileWriter(makePath(Array(outputDir, benchmarkName + ".csv")), true))
+    val statPrinter = new PrintWriter(new FileWriter(makePath(Array(outputDir, "stat.csv")), true))
     val convertTime = (millis : Long, format : String) => format match{
       case "ms" => "%dms".format(millis)
       case "s" => "%ds %dms".format(millis / 1000, millis % 1000)
       case "min" => "%dmin %ds %dms".format(millis / 60000, millis % 60000 / 1000, millis % 60000 % 1000)
-      case * => throw new IllegalArgumentException("Unknown time format" + format)
+      case _ => throw new IllegalArgumentException("Unknown time format" + format)
     }
     val times = Array(loadTime, trainTime, testTime).map(convertTime(_, extractCommon(TIME_FORMAT)))
     statPrinter.println((benchmarkName +: times) mkString ",")

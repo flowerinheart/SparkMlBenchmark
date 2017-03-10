@@ -15,12 +15,13 @@
 # limitations under the License.
 
 ############### common functions ################
-function check_dir(){
-  case `basename $1` in
+function check_dir() {
+  case $1 in
     alluxio:*)
-      $ALLUXIO_HOME/bin/alluxio mkdir $1
+      $ALLUXIO_HOME/bin/alluxio fs mkdir $1
       ;;
     hdfs:*)
+      echo "don't support hdfs now" && exit 0
       $HADOOP_HOME/bin/hadoop mkdir $1
       ;;
     *)
@@ -28,6 +29,21 @@ function check_dir(){
         echo "dir = $1"
         mkdir -p $1
       fi
+      ;;
+  esac
+}
+
+function delete_dir() {
+  case $1 in
+    alluxio:*)
+      $ALLUXIO_HOME/bin/alluxio fs rm -R $1
+      ;;
+    hdfs:*)
+      echo "don't support hdfs now" && exit 0
+      #$HADOOP_HOME/bin/hadoop mkdir $1
+      ;;
+    *)
+      rm -r $1
       ;;
   esac
 }
@@ -189,17 +205,22 @@ function run_benchmark() {
     BLAS="NATIVE"
     . "$1"
 
-    CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
-    DATA_DIR="${BENCH_HOME}/data/$BENCHMARK_NAME"
-    OUTPUT_DIR="${BENCH_HOME}/result"
-    COMMON_ARG="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN}"
+    [ -z "$GEN_DATA" ] && export GEN_DATA="yes"
+    [ -z "$CLASS" ] && export CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+    [ -z "$DATA_DIR" ] && export DATA_DIR="${BENCH_HOME}/data/$BENCHMARK_NAME"
+    [ -z "$OUTPUT_DIR" ] && export OUTPUT_DIR="${BENCH_HOME}/result"
+
+    if [ ${GEN_DATA} == "yes" ];then
+        delete_dir $DATA_DIR
+    fi
+    COMMON_ARG="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA}"
     OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
 
 
 
     #DU ${INPUT_HDFS} SIZE
     # prepare spark opt
-    check_dir $DATA_DIR
+#    check_dir $DATA_DIR
     check_dir $OUTPUT_DIR
     set_gendata_opt
     set_run_opt

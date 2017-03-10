@@ -13,8 +13,7 @@ else
 fi
 
 export BENCH_VERSION="1.0"
-[ -z "$BENCH_HOME" ] && export BENCH_HOME="${this}/.."
-[ -z "$BENCH_CONF" ] && export BENCH_BIN="${this}"
+[ -z "$BENCH_HOME" ] && export BENCH_HOME=`cd ${this}/..; pwd`
 [ -f "${BENCH_HOME}/bin/funcs.sh" ] && . "${BENCH_HOME}/bin/funcs.sh"
 
 
