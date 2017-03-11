@@ -200,7 +200,7 @@ function run_benchmark() {
     DATA_DIR="./data/temp"
     OUTPUT_DIR="./result/temp"
     BENCHMARK_NAME="temp"
-    TIME_FORMAT="ms"
+    TIME_FORMAT="s"
     LOAD_PATTERN="count"
     BLAS="NATIVE"
     . "$1"

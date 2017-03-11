@@ -4,7 +4,7 @@ PACKAGE="skydata.spark.benchmark.supervisal"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
-DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
+DATA_DIR="alluxio://10.0.2.21:19998/spark-benchmark/data/$BENCHMARK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
 #for data generate
@@ -17,7 +17,7 @@ DATA_GEN_ARG="${NUM_OF_EXAMPLES} ${NUM_OF_FEATURES} ${EPS} ${NUM_OF_PARTITIONS} 
 
 # for running
 MAX_ITERATION=30
-ALG_ARG=${MAX_ITERATION}"
+ALG_ARG="${MAX_ITERATION}"
 
 
 

@@ -13,7 +13,7 @@ master="127.0.0.1"
 
 
 SPARK_VERSION=2.0.2  #1.5.1
-[ -z "$SPARK_HOME" ] &&     export SPARK_HOME=$HOME/spark-2.0.1-bin-hadoop2.7
+[ -z "$SPARK_HOME" ] &&     export SPARK_HOME=/home/skydiscovery/spark-2.0.1-bin-hadoop2.7
 
 
 
@@ -25,7 +25,7 @@ SPARK_VERSION=2.0.2  #1.5.1
 ##SPARK_MASTER=mesos://HOST:PORT
 ##SPARK_MASTER=yarn-client
 ##SPARK_MASTER=yarn-cluster
-SPARK_MASTER=local[2]
+SPARK_MASTER="spark://10.0.2.21:7077"
 
 
 
@@ -82,6 +82,6 @@ SPARK_DRIVER_JVM_OPT=""
 SPARK_OPT=""
 
 
-ALLUXIO_HOME="$HOME/exercitation/alluxio_and_hadoop/alluxio"
+ALLUXIO_HOME="/home/skydiscovery/alluxio-1.3.0"
 #HADOOP_HOME=""
 

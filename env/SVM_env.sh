@@ -5,7 +5,7 @@ PACKAGE="skydata.spark.benchmark.supervisal"
 CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 DIR=`dirname "$0"`
 DIR=`cd "$DIR"/..; pwd`
-DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
+DATA_DIR="alluxio://10.0.2.21:19998/spark-benchmark/data/$BENCHMARvK_NAME"
 OUTPUT_DIR="${DIR}/result"
 
 #for data generate
