@@ -59,8 +59,10 @@ Firstly, set ALLUXIO_HOME or HADOOP_HOME in global_env.sh.
 
 Secondly set DATA_DIR in below format:
 
-alluxio://<master node address>:<master node port>/<path>, e.g: "alluxio://localhost:19998/LICENSE". Here is [alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html)  
-hdfs://<namenodehost>/<path>
+alluxio:// &lt;master node address>:&lt;master node port>/&lt;path>, e.g: "alluxio://localhost:19998/LICENSE". Here is
+[alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html)  
+
+hdfs:// &lt;namenodehost>/&lt;path>
 
 
 
