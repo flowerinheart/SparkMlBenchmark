@@ -21,9 +21,7 @@
 2. Configurations
 
     Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set:
-
     * SPARK_HOME, The Spark installation path.
-
     * SPARK_MASTER, Spark master, see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
@@ -40,24 +38,27 @@
 ## Basic Configuration
 All setting can be done by modifying algorithm's env file.
 ### 1. common arguments
-BENCHMARK_NAME will decide your spark app name, data subdirectory's name, default is "temp".
+* BENCHMARK_NAME will decide your spark app name, data subdirectory's name, default is "temp".
 
-PACKAGE is your scala script's package name. You must set it.
+* PACKAGE is your scala script's package name. You must set it.
 
-DATA_DIR will save your data which generate by spark, default is "ml-benchmark/data/$BENCHMARK_NAME".
+* DATA_DIR will save your data which generate by spark, default is "ml-benchmark/data/$BENCHMARK_NAME".
 
-OUTPUT_DIR is directory path, which save your running result, default is "ml-benchmark/result/$BENCHMARK_NAME".
+* OUTPUT_DIR is directory path, which save your running result, default is "ml-benchmark/result/$BENCHMARK_NAME".
 
-TIME_FORMAT is for set time measure(e.g.: ms/s/min), default is "ms".
+* TIME_FORMAT is for set time measure(e.g.: ms/s/min), default is "ms".
 :
-LOAD_PATTERN decide how to preheat rdd after loading, default is "count".
+* LOAD_PATTERN decide how to preheat rdd after loading, default is "count".
 
-BLAS decide use which blas implement (e.g.:mkl, openblas, f2j), default is "mkl".
+* BLAS decide use which blas implement (e.g.:mkl, openblas, f2j), default is "mkl".
 
 #### Alluxio and HDFS
 When use spark in cluster, you should put data file in dfs(e.g.: hdfs or allixio).
+
 Firstly, set ALLUXIO_HOME or HADOOP_HOME in global_env.sh.
+
 Secondly set DATA_DIR in below format:
+
 alluxio://<master node address>:<master node port>/<path>, e.g: "alluxio://localhost:19998/LICENSE". Here is [alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html)  
 hdfs://<namenodehost>/<path>
 
