@@ -20,12 +20,14 @@
 
 2. Configurations
 
-    Modify $SPARK_BENCH_HOME/bin/global_env.sh to make sure below variables has been set:
+    copy config/global_en.sh.template to config/global.env.sh
+
+    Modify $SPARK_BENCH_HOME/config/global_env.sh to make sure below variables has been set:
     * SPARK_HOME, The Spark installation path.
     * SPARK_MASTER, Spark master, see [spark doc](https://spark.apache.org/docs/latest/submitting-applications.html)
 
 
-3. Run benchmark
+3. Run benchmark in local
 
     run single benchmark by
 
@@ -35,10 +37,28 @@
 
         bin/sparkbm.sh run
 
+4. Run benchmark in cluster
+ 
+    configure hadoop(or alluxio) and spark in cluster mode.
+
+    set HADOOP_HOME(or ALLUXIO_HOME) in global_env.sh.
+
+    set DATA_DIR to HDFS path(or ALLUXIO path) like below:
+
+    alluxio:// &lt;master node address>:&lt;master node port>/&lt;path>, e.g: "alluxio://localhost:19998/LICENSE". Here is [alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html).
+
+    hdfs:// &lt;namenodehost>/&lt;path>, e.g: "hdfs://sd002021.skydata.com:9000/spark-benchmark/data".
+   
+    Then use bin/sparkbm.sh run to run.
+
+5. See run result
+
+    Run report will be generated in &lt;BENCH_HOME>/result, a csv file &lt;BENCHMARK_NAME>.csv and a row in stat.csv file.
+
+
 ## Basic Configuration
 All setting can be done by modifying algorithm's env file.
 ### 1. common arguments
-* BENCHMARK_NAME will decide your spark app name, data subdirectory's name, default is "temp".
 
 * PACKAGE is your scala script's package name. You must set it.
 
@@ -52,17 +72,6 @@ All setting can be done by modifying algorithm's env file.
 
 * BLAS decide use which blas implement (e.g.:mkl, openblas, f2j), default is "mkl".
 
-#### Alluxio and HDFS
-When use spark in cluster, you should put data file in dfs(e.g.: hdfs or allixio).
-
-Firstly, set ALLUXIO_HOME or HADOOP_HOME in global_env.sh.
-
-Secondly set DATA_DIR in below format:
-
-alluxio:// &lt;master node address>:&lt;master node port>/&lt;path>, e.g: "alluxio://localhost:19998/LICENSE". Here is
-[alluxio ref](http://www.alluxio.org/docs/1.4/en/Command-Line-Interface.html)  
-
-hdfs:// &lt;namenodehost>/&lt;path>
 
 
 
