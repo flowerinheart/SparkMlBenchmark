@@ -231,7 +231,7 @@ function init(){
     SPARK_OPT=""
     . "$1"
 
-    [ -z "$CLASS" ] && export CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+    CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
     if [ ${GEN_DATA} == "yes" ];then
       delete_dir $DATA_DIR
     fi

@@ -9,8 +9,8 @@ export BENCH_VERSION="1.0"
 
 
 ## set env var
-if [ -f "${this}/global_env.sh" ] ; then
-    . ${this}/global_env.sh
+if [ -f "${BENCH_HOME}/config/global_env.sh" ] ; then
+    . ${BENCH_HOME}/config/global_env.sh
 else
     echo "global_env.sh is missing"
     exit 1

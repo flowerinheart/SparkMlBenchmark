@@ -13,7 +13,6 @@ SPARK_MASTER=
 #OUTPUT_DIR
 
 #optional:report config
-#BENCHMARK_NAME                     #e.g "temp"
 #TIME_FORMAT                        #e.g "s" or "ms" or "min
 #LOAD_PATTERN=                      #e.g "count" or "no"
 #BLAS=                              #e.g "NATIVE" or "F2J"

@@ -11,10 +11,10 @@ function run {
         run_benchmark $2
         ;;
     "")
-        for file in ${BENCH_HOME}/env/*; do
+        for file in ${BENCH_HOME}/algorithm_config/*; do
             if [ -f $file ]; then
                 bench_name=`basename $file`
-                run_benchmark $file > ${BENCH_HOME}/logs/temp 2>&1
+                run_benchmark $file > ${BENCH_HOME}/logs/run.log 2>&1
                 if [ $? = "0" ]; then
                     echo "${bench_name}  pass"
                 else
@@ -37,44 +37,11 @@ function run {
     esac
 }
 
-function clean {
-    case $1 in
-    "result")
-        case $2 in
-        "")
-            for file in ${BENCH_HOME}/result/*;do
-                rm $file
-            done
-            ;;
-        *)
-            rm "${BENCH_HOME}/${2}.csv"
-            ;;
-        esac
-        ;;
-    "data")
-        . $2
-        delete_dir "$DATA_DIR"
-        ;;
-    *)
-        echo "You can use sparkbm clean like"
-        echo "sparkbm clean -h for help"
-        echo "sparkbm clean                                  # clean all file in data and result dir"
-        echo "sparkbm clean data [benchmark name]            # clean data dir(when no benchmark name) or clean benchmark dir under data dir"
-        echo "sparkbm clean result [benchmark name]          # clean result file(when no benchmark name) or clean benchmark.csv file under result dir"
-        ;;
-    esac
-}
-
-
 
 case $1 in
 "run")
     shift
     run $@
-    ;;
-"clean")
-    shift
-    clean $@
     ;;
 "build")
     cd ${BENCH_HOME}/benchmarks
@@ -82,7 +49,6 @@ case $1 in
 #    REMOTE=`dirname ${REMOTE_JAR}` 
 #    upload_jar "${LOCAL_JAR}" "${REMOTE}"
     cd ..
-   
     ;;
 *)
     echo "You can use sparkbm like"
