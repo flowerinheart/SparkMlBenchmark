@@ -31,7 +31,7 @@
 
     run single benchmark by
 
-        bin/sparkbm.sh run -f env/$ALG_ENV
+        bin/sparkbm.sh run -f algorithm_config/$ALG_ENV
 
     run all benchmarks by
 
