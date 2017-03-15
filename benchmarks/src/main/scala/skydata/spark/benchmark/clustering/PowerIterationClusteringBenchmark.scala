@@ -41,14 +41,15 @@ object PowerIterationClusteringBenchmark extends MllibUnsupervisalBenchmark[Powe
     }.zipWithIndex
 
       val rdd = sc.parallelize(points)
-      val t = rdd.cartesian(rdd).flatMap { case (((x0, y0), i0), ((x1, y1), i1)) =>
+      val t = rdd.cartesian(rdd)
+      val data  = t.flatMap { case (((x0, y0), i0), ((x1, y1), i1)) =>
         if (i0 < i1) {
           Some(Vectors.dense(i0.toLong, i1.toLong, gaussianSimilarity((x0, y0), (x1, y1))))
         } else {
           None
         }
       }
-      t.map(vector =>
+      data.map(vector =>
         vector.toArray.mkString(" ")
       ).saveAsTextFile(path)
   }

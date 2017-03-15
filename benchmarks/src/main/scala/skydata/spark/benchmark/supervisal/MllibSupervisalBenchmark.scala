@@ -10,6 +10,12 @@ import org.apache.spark.mllib.util.MLUtils.loadLabeledPoints
 import org.apache.spark.rdd.RDD
 import skydata.spark.benchmark.SparkMlBenchmark
 
+import scala.util.Random
+import com.github.fommil.netlib.BLAS.{getInstance => blas}
+import org.apache.spark.SparkContext
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.annotation.{DeveloperApi, Since}
+
 
 
 abstract class MllibSupervisalBenchmark[M] extends SparkMlBenchmark[LabeledPoint, M]{
@@ -38,9 +44,29 @@ abstract class MllibSupervisalBenchmark[M] extends SparkMlBenchmark[LabeledPoint
       dataGenArgTable(N_FEATURES).toInt, dataGenArgTable(EPS).toDouble,
       dataGenArgTable(N_PARTITIONS).toInt, dataGenArgTable(INTERCEPT).toDouble)
 
+  def generateClassficationData() = {
 
+      val nexamples: Int = dataGenArgTable(N_EXAMPLES).toInt
+      val nfeatures: Int = dataGenArgTable(N_FEATURES).toInt
+      val parts: Int = dataGenArgTable(N_PARTITIONS).toInt
+      val globalRnd = new Random(94720)
+      //val trueWeights = Array.fill[Double](nfeatures + 1)(globalRnd.nextGaussian())
+      val trueWeights = Array.fill[Double](nfeatures )(globalRnd.nextGaussian())
 
-  type PredictModel  = { def predict(value : Vector) : Double}
+      val data: RDD[LabeledPoint] = sc.parallelize(0 until nexamples, parts).map { idx =>
+        val rnd = new Random(42 + idx)
+
+        val x = Array.fill[Double](nfeatures) {
+        rnd.nextDouble() * 2.0 - 1.0
+        }
+        val yD = blas.ddot(trueWeights.length, x, 1, trueWeights, 1) + rnd.nextGaussian() * 0.1
+        val y = if (yD < 0) 0.0 else 1.0
+        LabeledPoint(y, Vectors.dense(x))
+      }
+      data
+  }
+
+  type PredictModel = { def predict(value : Vector) : Double }
   def predictorTest(model : PredictModel, testData : RDD[LabeledPoint]) = {
     testData.map({ point =>
       model.predict(point.features)

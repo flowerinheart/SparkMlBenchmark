@@ -13,7 +13,14 @@ function run {
     "")
         for file in ${BENCH_HOME}/env/*; do
             if [ -f $file ]; then
-                run_benchmark $file
+                bench_name=`basename $file`
+                run_benchmark $file > ${BENCH_HOME}/logs/temp 2>&1
+                if [ $? = "0" ]; then
+                    echo "${bench_name}  pass"
+                else
+                    echo "${bench_name}  fail"
+                    exit 255
+                fi
             fi
         done
         ;;
@@ -45,18 +52,8 @@ function clean {
         esac
         ;;
     "data")
-        case $2 in
-        "")
-            rm -r "${BENCH_HOME}/data/*"
-            ;;
-        *)
-            rm -r "${BENCH_HOME}/data/$2"
-            ;;
-        esac
-        ;;
-    "")
-        rm -r "${BENCH_HOME}/data/*"
-        rm -r "${BENCH_HOME}/result/*"
+        . $2
+        delete_dir "$DATA_DIR"
         ;;
     *)
         echo "You can use sparkbm clean like"
@@ -82,7 +79,10 @@ case $1 in
 "build")
     cd ${BENCH_HOME}/benchmarks
     mvn clean package
+#    REMOTE=`dirname ${REMOTE_JAR}` 
+#    upload_jar "${LOCAL_JAR}" "${REMOTE}"
     cd ..
+   
     ;;
 *)
     echo "You can use sparkbm like"

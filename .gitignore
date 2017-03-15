@@ -33,3 +33,4 @@ project/plugins/project/
 data/
 result/
 out/
+bin/global_env.sh

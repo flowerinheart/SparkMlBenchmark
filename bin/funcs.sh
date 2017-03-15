@@ -21,8 +21,7 @@ function check_dir() {
       $ALLUXIO_HOME/bin/alluxio fs mkdir $1
       ;;
     hdfs:*)
-      echo "don't support hdfs now" && exit 0
-      $HADOOP_HOME/bin/hadoop mkdir $1
+      $HADOOP_HOME/bin/hadoop mkdir -p $1
       ;;
     *)
       if [ ! -d $1  ]; then
@@ -39,14 +38,38 @@ function delete_dir() {
       $ALLUXIO_HOME/bin/alluxio fs rm -R $1
       ;;
     hdfs:*)
-      echo "don't support hdfs now" && exit 0
-      #$HADOOP_HOME/bin/hadoop mkdir $1
+      $HADOOP_HOME/bin/hadoop fs -rm -r $1
       ;;
     *)
       rm -r $1
       ;;
   esac
 }
+ 
+function upload_jar() {
+  case $2 in
+    hdfs*)
+      dir=`dirname $2`
+      ${HADOOP_HOME}/bin/hadoop fs -ls hdfs://
+      ${HADOOP_HOME}/bin/hadoop fs -mkdir -p $dir
+      ${HADOOP_HOME}/bin/hadoop fs -rm  "$dir/*"
+      ${HADOOP_HOME}/bin/hadoop fs -copyFromLocal $1 $2
+      echo "${HADOOP_HOME} $dir  $2" && exit 0
+      ;;
+    alluxio:*)
+      $ALLUXIO_HOME/bin/alluxio fs copyFromLocal $1 $2
+      ;;
+    *)
+     IPS=`cat $SPARK_HOME/conf/slaves`
+     for ip in $IPS; do
+        echo $ip
+        scp "${1}" "${ip}:${2}"
+     done
+     exit 0
+      ;;
+  esac
+}
+
 function setup() {
   if [ "${MASTER}" = "spark" ] && [ "${RESTART}" = "TRUE" ] ; then
     "${SPARK_HOME}/sbin/stop-all.sh"
@@ -94,6 +117,9 @@ function set_gendata_opt() {
   if [ ! -z "$SPARK_DEFAULT_PARALLELISM" ]; then
     SPARK_OPT="${SPARK_OPT} --conf spark.default.parallelism=${SPARK_DEFAULT_PARALLELISM}"
   fi
+  if [ ! -z "$SPARK_DEFAULT_PARALLELISM" ]; then
+    SPARK_OPT="${SPARK_OPT} --conf spark.default.parallelism=${SPARK_DEFAULT_PARALLELISM}"
+  fi
   SPARK_OPT="${SPARK_OPT} --conf spark.hadoop.dfs.blocksize=536870912 --conf spark.hadoop.fs.local.block.size=512"
 
   YARN_OPT=
@@ -116,7 +142,10 @@ function set_run_opt() {
   fi
 }
 
-function echo_and_run() { echo "$@" ; "$@" ; }
+function echo_and_run() { 
+  echo "$@"
+  "$@" 
+}
 
 
 
@@ -195,32 +224,24 @@ function  CPTO() {
 }
 
 
-function run_benchmark() {
+function init(){
     # set algorithm enviroment variable
-    DATA_DIR="./data/temp"
-    OUTPUT_DIR="./result/temp"
-    BENCHMARK_NAME="temp"
-    TIME_FORMAT="s"
-    LOAD_PATTERN="count"
-    BLAS="NATIVE"
+    SPARK_EXECUTOR_JVM_OPT=""
+    SPARK_DRIVER_JVM_OPT=""
+    SPARK_OPT=""
     . "$1"
 
-    [ -z "$GEN_DATA" ] && export GEN_DATA="yes"
     [ -z "$CLASS" ] && export CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
-    [ -z "$DATA_DIR" ] && export DATA_DIR="${BENCH_HOME}/data/$BENCHMARK_NAME"
-    [ -z "$OUTPUT_DIR" ] && export OUTPUT_DIR="${BENCH_HOME}/result"
-
     if [ ${GEN_DATA} == "yes" ];then
-        delete_dir $DATA_DIR
+      delete_dir $DATA_DIR
     fi
-    COMMON_ARG="${DATA_DIR} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA}"
+    COMMON_ARG="${DATA_DIR}/${BENCHMARK_NAME} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA}"
     OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
+}
 
 
-
-    #DU ${INPUT_HDFS} SIZE
-    # prepare spark opt
-#    check_dir $DATA_DIR
+function run_benchmark() {
+    init $1
     check_dir $OUTPUT_DIR
     set_gendata_opt
     set_run_opt
@@ -232,8 +253,8 @@ function run_benchmark() {
     #RM ${OUTPUT_HDFS}
 
     #echo $OUTPUT_DIR && exit 0
-    JAR="${DIR}/benchmarks/target/spark.benchmarks-${BENCH_VERSION}.jar"
-    echo_and_run sh -c " ${SPARK_HOME}/bin/spark-submit --name ${BENCHMARK_NAME} --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR} ${OPTION}"
+    echo_and_run sh -c "${SPARK_HOME}/bin/spark-submit --name ${BENCHMARK_NAME}   --class ${CLASS} --master ${SPARK_MASTER} ${YARN_OPT} ${SPARK_OPT} ${JAR_PATH} ${OPTION}"
 }
+
 
 

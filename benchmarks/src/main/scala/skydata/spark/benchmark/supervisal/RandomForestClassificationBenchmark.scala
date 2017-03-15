@@ -20,16 +20,18 @@ object RandomForestClassificationBenchmark extends MllibSupervisalBenchmark[Rand
   override lazy val algArgNames : Array[Key] = Array(N_CLASS, N_TREES, F_S_STRATEGY, IMPURITY, MAXDEPTH, MAXBINS)
 
 
-  override def genData(path : String) : Unit = generateLinearData.map{lp =>
-    new LabeledPoint(Math.abs(lp.label) % algArgTable(N_CLASS).toInt, lp.features)
-  }.saveAsTextFile(path)
+  override def genData(path : String) : Unit = generateClassficationData().saveAsTextFile(path)
   //subtype  method
   override def train(trainData: RDD[LabeledPoint]): RandomForestModel = {
+    println("************master  " + sc.master)
     val categoricalFeaturesInfo = Map[Int, Int]()
-    RandomForest.trainClassifier(trainData, algArgTable(N_CLASS).toInt, categoricalFeaturesInfo,
+    RandomForest.trainClassifier(trainData,
+      algArgTable(N_CLASS).toInt, categoricalFeaturesInfo,
       algArgTable(N_TREES).toInt, algArgTable(F_S_STRATEGY), algArgTable(IMPURITY),
       algArgTable(MAXDEPTH).toInt, algArgTable(MAXBINS).toInt)
   }
 
-  override def test(model: RandomForestModel, testData: RDD[LabeledPoint]): Unit = predictorTest(model, testData)
+  override def test(model: RandomForestModel, testData: RDD[LabeledPoint]): Unit = {
+    predictorTest(model, testData)
+  }
 }

@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 BENCHMARK_NAME="GradientBoostingRegression"
 PACKAGE="skydata.spark.benchmark.supervisal"
-CLASS="${PACKAGE}.${BENCHMARK_NAME}Benchmark"
 
-DIR=`dirname "$0"`
-DIR=`cd "$DIR"/..; pwd`
-DATA_DIR="${DIR}/data/$BENCHMARK_NAME"
-OUTPUT_DIR="${DIR}/result"
+#optional
+#DATA_DIR                              e.g "alluxio://10.0.2.21:19998/spark-benchmark/data/$BENCHMARK_NAME"
+#CLASS                                 e.g "${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+#OUTPUT_DIR                            e.g "${DIR}/result"
 
 
 

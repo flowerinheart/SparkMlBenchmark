@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
-#BENCHMARK_NAME=
-#PACKAGE="skydata.spark.benchmark.clustering"
+BENCHMARK_NAME=
+PACKAGE="skydata.spark.benchmark.clustering"
+#optional
+#DATA_DIR                              e.g "alluxio://10.0.2.21:19998/spark-benchmark/data/$BENCHMARK_NAME"
+#CLASS                                 e.g "${PACKAGE}.${BENCHMARK_NAME}Benchmark"
+#OUTPUT_DIR                            e.g "${DIR}/result"
 
 #for data_gen ,this arguments are for default, if you override dataGenArgNames in scala script, your should modify them
-#N_POINTS="40"
-#N_CLUSTERS="5"
-#DIMENSTION="10"
-#SCALING="0.6"
-#NUMPAR="5"
-#DATA_GEN_ARG="${N_POINTS} ${N_CLUSTERS} ${DIMENSTION} ${SCALING} ${NUMPAR}"
+N_POINTS="40"
+N_CLUSTERS="5"
+DIMENSTION="10"
+SCALING="0.6"
+NUMPAR="5"
+DATA_GEN_ARG="${N_POINTS} ${N_CLUSTERS} ${DIMENSTION} ${SCALING} ${NUMPAR}"
 
 
 
 
 #for alg ,this arguments are for default, if you override algArgNames in scala script, your should modify them
-#ALG_ARG=
+ALG_ARG=

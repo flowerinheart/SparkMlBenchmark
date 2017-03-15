@@ -20,9 +20,7 @@ object DecisionTreeClassificationBenchmark extends MllibSupervisalBenchmark[Deci
 
 
 
-  override def genData(path: String): Unit = generateLinearData.map({point =>
-          new LabeledPoint(Math.abs(point.label) % algArgTable(N_CLASS).toInt, point.features)}).
-            saveAsTextFile(path)
+  override def genData(path : String) : Unit = generateClassficationData().saveAsTextFile(path)
 
   override def load(dataPath: String): (RDD[LabeledPoint], RDD[LabeledPoint]) = loadLabelPoint(dataPath)
 

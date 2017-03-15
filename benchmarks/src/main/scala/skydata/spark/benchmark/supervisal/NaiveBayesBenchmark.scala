@@ -15,9 +15,10 @@ object NaiveBayesBenchmark extends MllibSupervisalBenchmark[NaiveBayesModel]{
   val TYPE = Key("type")
   override lazy val algArgNames : Array[Key] = Array(LAMBDA, TYPE)
   //subtype  method
-  override def genData(path : String) : Unit = generateLinearData.map({
-    case LabeledPoint(label, features) => new LabeledPoint(label, Vectors.dense(features.toArray.map(Math.abs)))
-  }).saveAsTextFile(path)
+  override def genData(path : String) : Unit = generateLinearData.map{lp =>
+    LabeledPoint(lp.label, Vectors.dense(lp.features.toArray.map(Math.abs)))
+  }.saveAsTextFile(path)
+//generateClassificationData.saveAsTextFile(path)
   override def train(trainData: RDD[LabeledPoint]): NaiveBayesModel =
     NaiveBayes.train(trainData, algArgTable(LAMBDA).toDouble, algArgTable(TYPE))
 
