@@ -1,12 +1,12 @@
 ## Spark ML Benchmark
 
-### Features
+## Features
 * easy to expand
 * automation
 * easy to configure output format
 
 
-### Getting Started
+## Getting Started
 
 1. Environment prepare and build
 
@@ -56,6 +56,14 @@
 
     Run report will be generated in &lt;BENCH_HOME>/result, a csv file &lt;BENCHMARK_NAME>.csv and a row in stat.csv file.
 
+## Command line
+bin/sparkbm.sh
+Usage:
+
+    bin/sparkbm.sh run|build [-f $file -s]
+
+Option -s mean skip data generation process
+Run without options mean run all benchmark in algorithm_config directory.
 
 ## Basic Configuration
 All setting can be done by modifying algorithm's env file.

@@ -2,26 +2,32 @@
 this=$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
 . ${this}/global_config.sh
 
+function run_algorithm() {
+    if [ -f $1 ]; then
+        bench_name=`basename $1`
+        run_benchmark $1 > ${LOG_DIR}/run.log 2>&1
+        if [ $? = "0" ]; then
+             echo "${bench_name}  pass"
+        else
+             echo "${bench_name}  fail"            
+        fi
+    else
+        echo "$1 isn't file or doesn't exist!"
+    fi
+}
+
 function run {
     case $1 in
     "-f")
         if [ "$3" == "-s" ]; then
             GEN_DATA="no"
         fi
-        run_benchmark $2
+        run_algorithm $2
         ;;
     "")
+        echo "sb"
         for file in ${BENCH_HOME}/algorithm_config/*; do
-            if [ -f $file ]; then
-                bench_name=`basename $file`
-                run_benchmark $file > ${BENCH_HOME}/logs/run.log 2>&1
-                if [ $? = "0" ]; then
-                    echo "${bench_name}  pass"
-                else
-                    echo "${bench_name}  fail"
-                    exit 255
-                fi
-            fi
+            run_algorithm $file
         done
         ;;
     *)
