@@ -34,3 +34,4 @@ data/
 result/
 out/
 config/global_env.sh
+log/*
