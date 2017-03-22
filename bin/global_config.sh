@@ -24,7 +24,10 @@ fi
 [ -z "$TIME_FORMAT" ] && export TIME_FORMAT="s"
 [ -z "$LOAD_PATTERN" ] && export LOAD_PATTERN="count"
 [ -z "$BLAS" ] && export BLAS="NATIVE"
-
+[ -z "$LOG_DIR" ] && export LOG_DIR="${BENCH_HOME}/logs"
+if [ ! -f $LOG_DIR ];then
+	mkdir -p $LOG_DIR
+fi
 
 [ -z "$SPARK_SERIALIZER" ] && export SPARK_SERIALIZER=org.apache.spark.serializer.KryoSerializer
 [ -z "$SPARK_RDD_COMPRESS" ] && export SPARK_RDD_COMPRESS=false

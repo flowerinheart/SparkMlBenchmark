@@ -38,6 +38,7 @@ function delete_dir() {
       $ALLUXIO_HOME/bin/alluxio fs rm -R $1
       ;;
     hdfs:*)
+		echo "delete hdfs"
       $HADOOP_HOME/bin/hadoop fs -rm -r $1
       ;;
     *)

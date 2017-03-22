@@ -25,7 +25,6 @@ function run {
         run_algorithm $2
         ;;
     "")
-        echo "sb"
         for file in ${BENCH_HOME}/algorithm_config/*; do
             run_algorithm $file
         done
@@ -59,6 +58,5 @@ case $1 in
 *)
     echo "You can use sparkbm like"
     echo "sparkbm run -h                     # get help for run benchmark"
-    echo "sparkbm clean -h                   # get help for clean"
     ;;
 esac
