@@ -189,30 +189,30 @@ Mainly four steps:
 1. Create algorithm scala class in benchmark/src/main/scala/skydata.spark.benchmark and name it XXXBenchmark, e.g.:KmeansBenchmark, and set BENCHMARK_NAME=Kmeans
 in env file.
 
+    
 2. Inherit one abstract class
 
-   Actually, this benchmark framework provides three abstract class to help you build benchmark.
-   * SparkMlBenchmark
-   * MllibSupervisalBenchmark(input data format is RDD[LabeledPoint])
-   * MllibUnsupervisalBenchmark(input data format is RDD[Vector])
+    Actually, this benchmark framework provides three abstract class to help you build benchmark.
+    * SparkMlBenchmark
+    * MllibSupervisalBenchmark(input data format is RDD[LabeledPoint])
+    * MllibUnsupervisalBenchmark(input data format is RDD[Vector])
+   
+    core proccess are four phases:
+    * genData(dataPath)    #generate rdd data and save it to dataPath
+    * load(dataPath)       #load  data from dataPath which is generated from geneData method, and split it to trainData and testData
+    * train(trainData)     #use trainData and arguments to build model, your can get algorithm's arguments from variance algArgTable
+    * test(model, testData)       #use model to predict testData
 
-   core proccess are four phases:
-   * genData(dataPath)    #generate rdd data and save it to dataPath
-   * load(dataPath)       #load  data from dataPath which is generated from geneData method, and split it to trainData and testData
-   * train(trainData)     #use trainData and arguments to build model, your can get algorithm's arguments from variance algArgTable
-   * test(model, testData)       #use model to predict testData
+    SparkMLBenchmark don't provide default implementation of them, other two provide default implementations for genData, load, test.
 
-   SparkMLBenchmark don't provide default implementation of them, other two provide default implementations for genData, load, test.
-
-   Next you can choose one to inherit or read their doc and api to help your decision.
-
+    Next you can choose one to inherit or read their doc and api to help your decision.
 3. override argument name's list like below:
-
         val INIT_MODE = Key("initializationMode")
         override lazy val dataGenArgNames = Array(N_CIR, N_POINTS)
         override lazy val algArgNames = Array(N_CLUSTERS, MAX_ITER, INIT_MODE)
-   Note that lazy is necessary .
-
+    Note that lazy is necessary .
+   
+   
 4. implement abstract methods, e.g.:
 
         object BisectingKMeansBenchmark extends MllibUnsupervisalBenchmark[BisectingKMeansModel]{
@@ -223,7 +223,7 @@ in env file.
               setK(dataGenArgTable(N_CLUSTERS).toInt).
               setMaxIterations(algArgTable(MAX_ITER).toInt)
               bkm.run(trainData)
-        }
+          }
           override def test(model: BisectingKMeansModel, testData: RDD[Vector]): Unit = model.predict(testData)
         }
 
