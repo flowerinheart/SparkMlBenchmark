@@ -49,7 +49,6 @@ SPARK_MASTER=
 
 # for data generation
 #NUM_OF_PARTITIONS=                  #e.g 10
-#SPARK_EXECUTOR_MEMORY=              #e.g 20G
 
 
 #EVENT_LOG_DIR_ON_HDFS=              #e.g "/spark/event"
