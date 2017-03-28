@@ -8,12 +8,12 @@ SPARK_MASTER=
 
 
 #optional:path configuration, DATA_DIR should be set to dfs(alluxio or hdfs) if you want to run benchmark in cluster mode.
-#DATA_DIR                           #e.g "hdfs://sd002021.skydata.com:9000/spark-benchmark/data"
+#DATA_DIR=                          #e.g "hdfs://sd002021.skydata.com:9000/spark-benchmark/data"
 #GEN_DATA=
-#OUTPUT_DIR
+#OUTPUT_DIR=
 
 #optional:report config
-#TIME_FORMAT                        #e.g "s" or "ms" or "min
+#TIME_FORMAT=                       #e.g "s" or "ms" or "min
 #LOAD_PATTERN=                      #e.g "count" or "no"
 #BLAS=                              #e.g "NATIVE" or "F2J"
 
@@ -24,36 +24,35 @@ SPARK_MASTER=
 # - SPARK_IO_COMPRESSION_CODEC, --conf spark.io.compression.codec
 # - SPARK_DEFAULT_PARALLELISM, --conf spark.default.parallelism
 
-#SPARK_SERIALIZER                   #e.g org.apache.spark.serializer.KryoSerializer
-#SPARK_RDD_COMPRESS                 #e.g false
-#SPARK_IO_COMPRESSION_CODEC         #e.g lzf
+#SPARK_SERIALIZER=                   #e.g org.apache.spark.serializer.KryoSerializer
+#SPARK_RDD_COMPRESS=                 #e.g false
+#SPARK_IO_COMPRESSION_CODEC=         #e.g lzf
 
 # Spark options in system.property or arguments of spark-submit
 # - SPARK_EXECUTOR_MEMORY, --conf spark.executor.memory
 # - SPARK_STORAGE_MEMORYFRACTION, --conf spark.storage.memoryfraction
-#SPARK_STORAGE_MEMORYFRACTION       #e.g 0.5
-#SPARK_EXECUTOR_MEMORY              #e.g 5g
+#SPARK_STORAGE_MEMORYFRACTION=       #e.g --conf spark.storage.memoryfraction
 
 # Spark options in YARN client mode
 # - SPARK_DRIVER_MEMORY, --driver-memory
 # - SPARK_EXECUTOR_INSTANCES, --num-executors
 # - SPARK_EXECUTOR_CORES, --executor-cores
 # - SPARK_DRIVER_MEMORY, --driver-memory
-#export SPARK_EXECUTOR_MEMORY       #e.g 5g
-#export SPARK_DRIVER_MEMORY         #e.g 5g
-#export SPARK_EXECUTOR_INSTANCES    #e.g 5g
-#export SPARK_EXECUTOR_CORES        #e.g 1
+#SPARK_EXECUTOR_MEMORY=              #e.g 5g
+#SPARK_DRIVER_MEMORY=                #e.g 5g
+#SPARK_EXECUTOR_INSTANCES=           #e.g 5g
+#SPARK_EXECUTOR_CORES=               #e.g 1
 
 # Storage levels, see http://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/StorageLevels.html
 # - STORAGE_LEVEL, set MEMORY_AND_DISK, MEMORY_AND_DISK_SER, MEMORY_ONLY, MEMORY_ONLY_SER, or DISK_ONLY
-#STORAGE_LEVEL                      #e.g MEMORY_AND_DISK
+#STORAGE_LEVEL=                      #e.g MEMORY_AND_DISK
 
 # for data generation
-#NUM_OF_PARTITIONS                  #e.g 10
-#SPARK_EXECUTOR_MEMORY              #e.g 20G
+#NUM_OF_PARTITIONS=                  #e.g 10
+#SPARK_EXECUTOR_MEMORY=              #e.g 20G
 
 
-#EVENT_LOG_DIR_ON_HDFS              #e.g "/spark/event"
-#EVENT_LOG_BACKUP_DIR_ON_HDFS       #e.g "/spark/backup/event"
-#REPORT_DIR_ON_HDFS                 #e.g "/SparkBenchMark/report"
-#EVENT_LOG_LOCAL_DIR_TMP            #e.g "/disk/sata/sdi/skydiscovery/spark/event/tmp"
+#EVENT_LOG_DIR_ON_HDFS=              #e.g "/spark/event"
+#EVENT_LOG_BACKUP_DIR_ON_HDFS=       #e.g "/spark/backup/event"
+#REPORT_DIR_ON_HDFS=                 #e.g "/SparkBenchMark/report"
+#EVENT_LOG_LOCAL_DIR_TMP=            #e.g "/disk/sata/sdi/skydiscovery/spark/event/tmp"

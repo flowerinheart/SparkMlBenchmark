@@ -60,10 +60,17 @@
 bin/sparkbm.sh
 Usage:
 
-    bin/sparkbm.sh run|build [-f $file -s]
+    bin/sparkbm.sh run|build [-f $file [-s]]
 
 Option -s mean skip data generation process
+
 Run without options mean run all benchmark in algorithm_config directory.
+
+## Configuration levels
+Configuration has two level: global and algorithm.
+
+You can set one argument as default for all algorithm in config/global_env.sh or set special arguments for one algorithm in its environment file in algorithm_config directory.
+
 
 ## Basic Configuration
 All setting can be done by modifying algorithm's env file.
@@ -181,6 +188,7 @@ Mainly four steps:
 
 1. Create algorithm scala class in benchmark/src/main/scala/skydata.spark.benchmark and name it XXXBenchmark, e.g.:KmeansBenchmark, and set BENCHMARK_NAME=Kmeans
 in env file.
+
 2. Inherit one abstract class
 
    Actually, this benchmark framework provides three abstract class to help you build benchmark.
@@ -200,18 +208,29 @@ in env file.
 
 3. override argument name's list like below:
 
-       val INIT_MODE = Key("initializationMode")
-       override lazy val dataGenArgNames = Array(N_CIR, N_POINTS)
-       override lazy val algArgNames = Array(N_CLUSTERS, MAX_ITER, INIT_MODE)
-
+        val INIT_MODE = Key("initializationMode")
+        override lazy val dataGenArgNames = Array(N_CIR, N_POINTS)
+        override lazy val algArgNames = Array(N_CLUSTERS, MAX_ITER, INIT_MODE)
    Note that lazy is necessary .
 
+4. implement abstract methods, e.g.:
 
-4. implement abstract methods:
+        object BisectingKMeansBenchmark extends MllibUnsupervisalBenchmark[BisectingKMeansModel]{
+          override lazy val algArgNames : Array[Key] = Array(MAX_ITER)
+
+          override def train(trainData: RDD[Vector]): BisectingKMeansModel = {
+            val bkm = new BisectingKMeans().
+              setK(dataGenArgTable(N_CLUSTERS).toInt).
+              setMaxIterations(algArgTable(MAX_ITER).toInt)
+              bkm.run(trainData)
+        }
+          override def test(model: BisectingKMeansModel, testData: RDD[Vector]): Unit = model.predict(testData)
+        }
+
 
 
 
 
 ### Environment file
 SparkMlBenchMark/algorithm_config/template has provided two template files for clustering and
-supervisal algorithms, just set all necessary arguments.
+supervisal algorithms, just copy one of them and set all necessary arguments.
