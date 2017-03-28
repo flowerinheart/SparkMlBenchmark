@@ -18,7 +18,7 @@ SPARK_MASTER=
 #BLAS=                              #e.g "NATIVE" or "F2J"
 
 # Optional
-# Spark config in environment variable or aruments of spark-submit 
+# Spark config in environment variable or aruments of spark-submit
 # - SPARK_SERIALIZER, --conf spark.serializer
 # - SPARK_RDD_COMPRESS, --conf spark.rdd.compress
 # - SPARK_IO_COMPRESSION_CODEC, --conf spark.io.compression.codec
@@ -28,7 +28,7 @@ SPARK_MASTER=
 #SPARK_RDD_COMPRESS                 #e.g false
 #SPARK_IO_COMPRESSION_CODEC         #e.g lzf
 
-# Spark options in system.property or arguments of spark-submit 
+# Spark options in system.property or arguments of spark-submit
 # - SPARK_EXECUTOR_MEMORY, --conf spark.executor.memory
 # - SPARK_STORAGE_MEMORYFRACTION, --conf spark.storage.memoryfraction
 #SPARK_STORAGE_MEMORYFRACTION       #e.g 0.5
@@ -39,8 +39,10 @@ SPARK_MASTER=
 # - SPARK_EXECUTOR_INSTANCES, --num-executors
 # - SPARK_EXECUTOR_CORES, --executor-cores
 # - SPARK_DRIVER_MEMORY, --driver-memory
-#export EXECUTOR_GLOBAL_MEM         #e.g 6g
-#export executor_cores              #e.g 1
+#export SPARK_EXECUTOR_MEMORY       #e.g 5g
+#export SPARK_DRIVER_MEMORY         #e.g 5g
+#export SPARK_EXECUTOR_INSTANCES    #e.g 5g
+#export SPARK_EXECUTOR_CORES        #e.g 1
 
 # Storage levels, see http://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/StorageLevels.html
 # - STORAGE_LEVEL, set MEMORY_AND_DISK, MEMORY_AND_DISK_SER, MEMORY_ONLY, MEMORY_ONLY_SER, or DISK_ONLY
@@ -55,6 +57,3 @@ SPARK_MASTER=
 #EVENT_LOG_BACKUP_DIR_ON_HDFS       #e.g "/spark/backup/event"
 #REPORT_DIR_ON_HDFS                 #e.g "/SparkBenchMark/report"
 #EVENT_LOG_LOCAL_DIR_TMP            #e.g "/disk/sata/sdi/skydiscovery/spark/event/tmp"
-
-
-

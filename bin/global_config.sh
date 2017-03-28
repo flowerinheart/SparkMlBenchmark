@@ -35,8 +35,10 @@ fi
 
 [ -z "$SPARK_STORAGE_MEMORYFRACTION" ] && export SPARK_STORAGE_MEMORYFRACTION=0.5
 [ -z "$SPARK_EXECUTOR_MEMORY" ] && export SPARK_EXECUTOR_MEMORY=5g
-[ -z "$EXECUTOR_GLOBAL_MEM" ] && export EXECUTOR_GLOBAL_MEM=eg
-[ -z "$executor_cores" ] && export executor_cores=1
+[ -z "$SPARK_DRIVER_MEMORY" ] && export SPARK_DRIVER_MEMORY=5g
+[ -z "$SPARK_EXECUTOR_INSTANCES" ] && export SPARK_EXECUTOR_INSTANCES=5g
+#[ -z "$EXECUTOR_GLOBAL_MEM" ] && export EXECUTOR_GLOBAL_MEM=5g
+[ -z "$SPARK_EXECUTOR_CORES" ] && export SPARK_EXECUTOR_CORES=1
 
 [ -z "$STORAGE_LEVEL" ] && export STORAGE_LEVEL=MEMORY_AND_DISK
 
@@ -47,7 +49,10 @@ fi
 [ -z "$EVENT_LOG_DIR_ON_HDFS" ] && export EVENT_LOG_DIR_ON_HDFS="/spark/event"
 [ -z "$EVENT_LOG_BACKUP_DIR_ON_HDFS" ] && export EVENT_LOG_BACKUP_DIR_ON_HDFS="/spark/backup/event"
 [ -z "$REPORT_DIR_ON_HDFS" ] && export REPORT_DIR_ON_HDFS="/SparkBenchMark/report"
-[ -z "$EVENT_LOG_LOCAL_DIR_TMP" ] && export EVENT_LOG_LOCAL_DIR_TMP="/disk/sata/sdi/skydiscovery/spark/event/tmp"
+[ -z "$EVENT_LOG_LOCAL_DIR_TMP" ] && export EVENT_LOG_LOCAL_DIR_TMP="$LOG_DIR/spark_log"
+if [ ! -f $EVENT_LOG_LOCAL_DIR_TMP ];then
+	mkdir -p $EVENT_LOG_LOCAL_DIR_TMP
+fi
 
 
 
@@ -59,8 +64,3 @@ JAR_PATH="$BENCH_HOME/benchmarks/target/$JAR_NAME"
 #NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLASWrapper -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACKWrapper -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.NativeSystemARPACKWrapper"
 NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fomil.netlib.NativeSystemARPACK"
 F2jBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jSystemARPACK"
-
-
-
-
-

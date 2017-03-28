@@ -9,7 +9,7 @@ function run_algorithm() {
         if [ $? = "0" ]; then
              echo "${bench_name}  pass"
         else
-             echo "${bench_name}  fail"            
+             echo "${bench_name}  fail"
         fi
     else
         echo "$1 isn't file or doesn't exist!"
@@ -30,17 +30,22 @@ function run {
         done
         ;;
     *)
-        echo "You can use sparkbm like"
-        echo "sparkbm run -h for help"
-        echo "sparkbm run                                  # run all algorithm define in env dir"
-        echo "sparkbm run -f [benchmark env file]          # run algorithm according env file and generate data every time"
-        echo "sparkbm run -f [benchmark env file] -s          # run algorithm according env file and don't generate data every time"
-
+        Usage
         ;;
 
 
     esac
 }
+
+function Usage {
+        echo "Usage:"
+        echo "build                                                       build benchmark"
+        echo "run -h                                                      get help"
+        echo "run                                                         run all algorithm define in env dir"
+        echo "run -f [benchmark env file]                                 run algorithm according env file and generate data every time"
+        echo "run -f [benchmark env file] -s                              run algorithm according env file and don't generate data every time"
+}
+
 
 
 case $1 in
@@ -51,12 +56,11 @@ case $1 in
 "build")
     cd ${BENCH_HOME}/benchmarks
     mvn clean package
-#    REMOTE=`dirname ${REMOTE_JAR}` 
+#    REMOTE=`dirname ${REMOTE_JAR}`
 #    upload_jar "${LOCAL_JAR}" "${REMOTE}"
     cd ..
     ;;
 *)
-    echo "You can use sparkbm like"
-    echo "sparkbm run -h                     # get help for run benchmark"
+    Usage
     ;;
 esac
