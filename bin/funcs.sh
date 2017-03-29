@@ -89,19 +89,30 @@ function set_Java_OPT(){
     SPARK_OPT="${SPARK_OPT} --conf "'"'"spark.executor.extraJavaOptions=${SPARK_EXECUTOR_JVM_OPT}"'"'
     SPARK_OPT="${SPARK_OPT} --conf "'"'"spark.driver.extraJavaOptions=${SPARK_DRIVER_JVM_OPT}"'"'
 }
-function set_blas(){
-    if [[ $1 = "NATIVE" ]]; then
-         if [[ -z "$NativeBLASOPT" ]]; then
-            echo "WARN: NativeBLASOpt not set"
-         fi
-         SPARK_EXECUTOR_JVM_OPT="$NativeBLASOPT $SPARK_EXECUTOR_JVM_OPT"
-         SPARK_DRIVER_JVM_OPT="$NativeBLASOPT $SPARK_DRIVER_JVM_OPT"
-    else
-         SPARK_EXECUTOR_JVM_OPT="$F2jBLASOPT $SPARK_EXECUTOR_JVM_OPT"
-         SPARK_DRIVER_JVM_OPT="$F2jBLASOPT $SPARK_DRIVER_JVM_OPT"
-    fi
-}
+
+
 function set_gendata_opt() {
+  if [ $BLAS == "native" ];then
+    if [ $WRAPPER == "true" ];then
+      SPARK_EXECUTOR_JVM_OPT="$WrapperOPT $WrapperNativeOPT $SPARK_EXECUTOR_JVM_OPT"
+      SPARK_DRIVER_JVM_OPT="$WrapperOPT $WrapperNativeOPT $SPARK_EXECUTOR_JVM_OPT"
+    else
+      SPARK_EXECUTOR_JVM_OPT="$NativeOPT $SPARK_EXECUTOR_JVM_OPT"
+      SPARK_DRIVER_JVM_OPT="$NativeOPT $SPARK_EXECUTOR_JVM_OPT"
+    fi
+  else
+    if [ $WRAPPER == "true" ];then
+      SPARK_EXECUTOR_JVM_OPT="$WrapperOPT $WrapperF2jOPT $SPARK_EXECUTOR_JVM_OPT"
+      SPARK_DRIVER_JVM_OPT="$WrapperOPT $WrapperF2jOPT $SPARK_EXECUTOR_JVM_OPT"
+    else
+      SPARK_EXECUTOR_JVM_OPT="$F2jOPT $SPARK_EXECUTOR_JVM_OPT"
+      SPARK_DRIVER_JVM_OPT="$F2jOPT $SPARK_EXECUTOR_JVM_OPT"
+    fi
+  fi
+
+
+
+
   if [ ! -z "$SPARK_EXECUTOR_MEMORY" ]; then
     SPARK_OPT="${SPARK_OPT} --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY}"
     echo "memory=$SPARK_EXECUTOR_MEMORY"
@@ -236,7 +247,7 @@ function init(){
     if [ ${GEN_DATA} == "yes" ];then
       delete_dir $DATA_DIR
     fi
-    COMMON_ARG="${DATA_DIR}/${BENCHMARK_NAME} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA}"
+    COMMON_ARG="${DATA_DIR}/${BENCHMARK_NAME} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA} ${WRAPPER}"
     OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
 }
 
@@ -246,7 +257,6 @@ function run_benchmark() {
     check_dir $OUTPUT_DIR
     set_gendata_opt
     set_run_opt
-    set_blas $BLAS
     set_Java_OPT
     setup
 

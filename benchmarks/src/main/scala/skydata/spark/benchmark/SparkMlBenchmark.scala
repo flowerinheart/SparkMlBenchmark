@@ -4,6 +4,7 @@ package skydata.spark.benchmark
 import java.io.{File, FileWriter, PrintWriter}
 import java.util.Scanner
 
+import com.github.fommil.netlib._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -37,13 +38,15 @@ abstract class SparkMlBenchmark[T, M]() {
   val TIME_FORMAT = "time_format"
   val LOAD_PATTERN = "load_pattern"
   val IS_GENDATA = "gen_data"
+  val WRAPPER = "wrapper"
 
   type ArgTable = collection.mutable.HashMap[Key, String]
   protected val commonArgTable: ArgTable = new ArgTable()
   protected val dataGenArgTable: ArgTable = new ArgTable()
   protected val algArgTable: ArgTable = new ArgTable()
 
-  lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY, BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN, IS_GENDATA)
+  lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY,
+    BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN, IS_GENDATA, WRAPPER)
   lazy val algArgNames : Array[Key] = Array()
   lazy val dataGenArgNames : Array[Key] = Array()
 
@@ -60,6 +63,7 @@ abstract class SparkMlBenchmark[T, M]() {
 
   /**
     * add extra metrics to singleHead and singleResult
+    *
     * @param tuple2 list compose of (argName, argStr)
     */
   private [benchmark] def addMetrics(tuple2 : (String, String)*) = tuple2.foreach({t2 =>
@@ -89,18 +93,18 @@ abstract class SparkMlBenchmark[T, M]() {
 
 
 
+  private[SparkMlBenchmark] val checkAndCreateDir = (path : String) => {
+    val file = new File(path)
+    if(!file.exists())
+      file.mkdirs() match {
+        case true => true
+        case false => throw new RuntimeException("could not create dir: " + path)
+      }
+  }
+  //    checkAndCreateDir(dataDir)
 
   /** prepare file environment for running benchmark */
   private def prepareEnvironment(dataDir : String, outputDir : String, benchmarkName : String) = {
-    val checkAndCreateDir = (path : String) => {
-      val file = new File(path)
-      if(!file.exists())
-        file.mkdirs() match {
-          case true => true
-          case false => throw new RuntimeException("could not create dir: " + path)
-        }
-    }
-//    checkAndCreateDir(dataDir)
     checkAndCreateDir(outputDir)
     /** check data dir*/
 //    val manifestFile = new File(makePath(Array(dataDir, "manifest.csv")))
@@ -186,6 +190,21 @@ abstract class SparkMlBenchmark[T, M]() {
     singlePrinter.println((algArgNames.map(algArgTable(_)) ++ times ++ extraAlgResult) mkString ",")
     statPrinter.close()
     singlePrinter.close()
+
+
+    //generate blas report
+    if(commonArgTable(WRAPPER) == "true") {
+      
+      System.out.println("************" + BLAS.getInstance().getClass.getName());
+      System.out.println("************" + LAPACK.getInstance().getClass.getName());
+      System.out.println("************" + ARPACK.getInstance().getClass.getName());
+      System.out.println("************" + NativeSystemBLASWrapper.instance.getClass.getName());
+      System.out.println("************" + NativeSystemLAPACKWrapper.instance.getClass.getName());
+      System.out.println("************" + NativeSystemARPACKWrapper.instance.getClass.getName());
+      val reportPath = makePath(Array(outputDir, "BLAS", benchmarkName))
+      checkAndCreateDir(reportPath)
+      Tools.generateReport(reportPath)
+    }
     sc.stop()
   }
 
@@ -214,6 +233,7 @@ abstract class SparkMlBenchmark[T, M]() {
     * 1. Parse arguments from dataGenTabl.
     * 2. geenerate data rdd by youself, mllib.util may help you.
     * 3. save it by calling saveAsTextFile(path).
+    *
     * @param path  the algorithm data directory path, eg: /user/XXX/kmean/data
     */
   def genData(path : String) : Unit
@@ -221,6 +241,7 @@ abstract class SparkMlBenchmark[T, M]() {
 
   /**
     * Load data from other place, your could use sc.textFile(dataPath) and convert RDD[String] your data format
+    *
     * @param dataPath data directory path in local fs or dfs
     * @return Tuple2 compose of trainData : RDD[T] and testData : RDD[T]
     */
@@ -228,6 +249,7 @@ abstract class SparkMlBenchmark[T, M]() {
 
   /**
     * Train model from trainData and you should parse arguments from algArgTable to configure model.
+    *
     * @param trainData  trainData provide by load method.
     * @return model that has been trained.
     */
@@ -235,6 +257,7 @@ abstract class SparkMlBenchmark[T, M]() {
 
   /**
     * Predict respone of testData by model.
+    *
     * @param model  model from train method.
     * @param testData testData from load method.
     */

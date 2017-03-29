@@ -23,7 +23,8 @@ fi
 [ -z "$BENCH_MARK" ] && export BENCHMARK_NAME="temp"
 [ -z "$TIME_FORMAT" ] && export TIME_FORMAT="s"
 [ -z "$LOAD_PATTERN" ] && export LOAD_PATTERN="count"
-[ -z "$BLAS" ] && export BLAS="NATIVE"
+[ -z "$BLAS" ] && export BLAS="native"
+[ -z "$WRAPPER" ] && export WRAPPER="false"
 [ -z "$LOG_DIR" ] && export LOG_DIR="${BENCH_HOME}/logs"
 if [ ! -f $LOG_DIR ];then
 	mkdir -p $LOG_DIR
@@ -60,5 +61,13 @@ fi
 JAR_NAME="spark.benchmarks-${BENCH_VERSION}.jar"
 JAR_PATH="$BENCH_HOME/benchmarks/target/$JAR_NAME"
 #NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLASWrapper -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACKWrapper -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.NativeSystemARPACKWrapper"
-NativeBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fomil.netlib.NativeSystemARPACK"
-F2jBLASOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jSystemARPACK"
+
+
+
+
+
+WrapperOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLASWrapper -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACKWrapper -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.NativeSystemARPACKWrapper"
+NativeOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeSystemBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeSystemLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.NativeSystemARPACK"
+F2jOPT="-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jBLAS -Dcom.github.fommil.netlib.LAPACK=eom.github.fommil.netlib.F2jLAPACK -Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jARPACK"
+WrapperNativeOPT="-Dcom.github.fommil.netlib.wrapper.BLAS=com.github.fommil.netlib.NativeSystemBLAS -Dcom.github.fommil.netlib.wrapper.LAPACK=com.github.fommil.netlib.NativeSystemLAPACK -Dcom.github.fommil.netlib.wrapper.ARPACK=com.github.fommil.netlib.NativeSystemARPACK"
+WrapperF2jOPT="-Dcom.github.fommil.netlib.wrapper.BLAS=com.github.fommil.netlib.F2jBLAS -Dcom.github.fommil.netlib.wrapper.LAPACK=com.github.fommil.netlib.F2jLAPACK -Dcom.github.fommil.netlib.wrapper.ARPACK=com.github.fommil.netlib.F2jARPACK"

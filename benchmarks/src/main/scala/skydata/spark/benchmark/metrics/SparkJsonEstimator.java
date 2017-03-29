@@ -38,7 +38,7 @@ public class SparkJsonEstimator extends JsonEstimator{
     public static void run(String []args){
         if(args.length < 2) throw new RuntimeException(new IllegalArgumentException());
 
-        boolean avg = args[0].equals("TRUE");
+        boolean avg = args[0].equals("AVG");
         ArrayList<SparkJsonEstimator> estimators = new ArrayList<>();
         for(int i = 1; i < args.length; i++)
             analysis(new File(args[i]), estimators);
