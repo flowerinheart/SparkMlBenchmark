@@ -129,6 +129,8 @@ For F2j blas in netlib-java, set BLAS environment variance to "F2j" in your algo
 
 For other's native blas, you should install it like mkl ( you should choose only one ) and do nothing else.
 
+If you want to observe how much time blas/arblas/labals cost, set WRAPPER="true" in your algorithm configuration file or config/global_env.sh file(for all algorithms), after run benchmark, you will see report in result/BLAS/ALGORITHM directory.
+
 
 ### Spark runtime configure
 Firstly, you should read [spark configuration document](http://spark.apache.org/docs/latest/configuration.html) and [spark submmit doc](http://spark.apache.org/docs/latest/submitting-applications.html)
