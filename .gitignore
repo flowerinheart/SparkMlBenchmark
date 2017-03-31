@@ -2,6 +2,8 @@
 ### Scala template
 *.class
 *.log
+logs
+
 
 
 #intellij
@@ -34,4 +36,3 @@ data/
 result/
 out/
 config/global_env.sh
-log/*
