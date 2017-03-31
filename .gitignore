@@ -2,7 +2,7 @@
 ### Scala template
 *.class
 *.log
-logs
+logs/
 
 
 
