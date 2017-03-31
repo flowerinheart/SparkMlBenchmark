@@ -11,6 +11,7 @@ function run_algorithm() {
         else
              echo "${bench_name}  fail"
         fi
+		rm ${LOG_DIR}/spark_log/*
     else
         echo "$1 isn't file or doesn't exist!"
     fi
@@ -54,6 +55,7 @@ case $1 in
     run $@
     ;;
 "build")
+	cp ${BENCH_HOME}/benchmarks/lib/* ${SPARK_HOME}/jars
     cd ${BENCH_HOME}/benchmarks
     mvn clean package
 #    REMOTE=`dirname ${REMOTE_JAR}`

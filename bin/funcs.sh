@@ -111,6 +111,9 @@ function set_gendata_opt() {
   fi
 
 
+  if [ ! -z "$SPARK_EVENTLOG_DIR" ]; then
+    SPARK_OPT="${SPARK_OPT} --conf spark.eventLog.dir=${SPARK_EVENTLOG_DIR} --conf spark.eventLog.enabled=true"
+  fi
 
 
   if [ ! -z "$SPARK_EXECUTOR_MEMORY" ]; then
@@ -247,7 +250,7 @@ function init(){
     if [ ${GEN_DATA} == "yes" ];then
       delete_dir $DATA_DIR
     fi
-    COMMON_ARG="${DATA_DIR}/${BENCHMARK_NAME} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA} ${WRAPPER}"
+    COMMON_ARG="${DATA_DIR}/${BENCHMARK_NAME} ${OUTPUT_DIR} ${BENCHMARK_NAME} ${TIME_FORMAT} ${LOAD_PATTERN} ${GEN_DATA} ${WRAPPER} ${LOG_DIR}"
     OPTION="${COMMON_ARG} ${DATA_GEN_ARG} ${ALG_ARG}"
 }
 

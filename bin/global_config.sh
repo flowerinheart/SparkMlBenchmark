@@ -48,9 +48,9 @@ fi
 [ -z "$EVENT_LOG_DIR_ON_HDFS" ] && export EVENT_LOG_DIR_ON_HDFS="/spark/event"
 [ -z "$EVENT_LOG_BACKUP_DIR_ON_HDFS" ] && export EVENT_LOG_BACKUP_DIR_ON_HDFS="/spark/backup/event"
 [ -z "$REPORT_DIR_ON_HDFS" ] && export REPORT_DIR_ON_HDFS="/SparkBenchMark/report"
-[ -z "$EVENT_LOG_LOCAL_DIR_TMP" ] && export EVENT_LOG_LOCAL_DIR_TMP="$LOG_DIR/spark_log"
-if [ ! -f $EVENT_LOG_LOCAL_DIR_TMP ];then
-	mkdir -p $EVENT_LOG_LOCAL_DIR_TMP
+[ -z "$SPARK_EVENTLOG_DIR" ] && export SPARK_EVENTLOG_DIR="$LOG_DIR/spark_log"
+if [ ! -f $SPARK_EVENTLOG_DIR ];then
+	mkdir -p $SPARK_EVENTLOG_DIR
 fi
 
 

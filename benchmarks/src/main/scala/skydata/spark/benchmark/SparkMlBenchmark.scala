@@ -1,12 +1,13 @@
 
 package skydata.spark.benchmark
 
-import java.io.{File, FileWriter, PrintWriter}
+import java.io.{File, FileWriter, PrintWriter, PrintStream}
 import java.util.Scanner
 
 import com.github.fommil.netlib._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
+import skydata.spark.benchmark.metrics._
 
 /**
   * Created by Darnell on 2017/2/21.
@@ -39,6 +40,7 @@ abstract class SparkMlBenchmark[T, M]() {
   val LOAD_PATTERN = "load_pattern"
   val IS_GENDATA = "gen_data"
   val WRAPPER = "wrapper"
+  val LOG_DIR = "log_dir"
 
   type ArgTable = collection.mutable.HashMap[Key, String]
   protected val commonArgTable: ArgTable = new ArgTable()
@@ -46,7 +48,7 @@ abstract class SparkMlBenchmark[T, M]() {
   protected val algArgTable: ArgTable = new ArgTable()
 
   lazy val commonArgNames : Array[Key] = Array(DATA_DIR_KEY, OUTPUT_DIR_KEY,
-    BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN, IS_GENDATA, WRAPPER)
+    BENCHMARK_NAME, TIME_FORMAT, LOAD_PATTERN, IS_GENDATA, WRAPPER, LOG_DIR)
   lazy val algArgNames : Array[Key] = Array()
   lazy val dataGenArgNames : Array[Key] = Array()
 
@@ -205,6 +207,12 @@ abstract class SparkMlBenchmark[T, M]() {
       checkAndCreateDir(reportPath)
       Tools.generateReport(reportPath)
     }
+
+
+	//parse spark log
+	System.setOut(new PrintStream(new File(makePath(Array(commonArgTable(LOG_DIR), "parsed_spark_log")))))
+	SparkJsonEstimator.run(Array("AVG", makePath(Array(commonArgTable(LOG_DIR), "spark_log"))))
+	System.out.close()
     sc.stop()
   }
 

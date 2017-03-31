@@ -6,6 +6,8 @@
     <version>1.0</version>
     <packaging>jar</packaging>
     <properties>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.version>2.11</scala.version>
         <scala.binary.version>2.11</scala.binary.version>
@@ -17,6 +19,20 @@
             <artifactId>spark-core_${scala.binary.version}</artifactId>
             <version>${spark.version}</version>
         </dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/json-simple-1.1.1.jar</systemPath>
+	    </dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.30</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/fastjson-1.2.30.jar</systemPath>
+	    </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-mllib_${scala.binary.version}</artifactId>
@@ -26,11 +42,15 @@
 			<groupId>com.github.fommil.netlib</groupId>
 			<artifactId>native_system-java</artifactId>
 			<version>1.2-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/native_system-java-1.2-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.github.fommil.netlib</groupId>
 			<artifactId>Tools</artifactId>
 			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/Tools-1.0.jar</systemPath>
 		</dependency>
     </dependencies>
 
