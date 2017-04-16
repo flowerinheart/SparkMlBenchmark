@@ -27,9 +27,9 @@ abstract class SparkMlBenchmark[T, M]() {
   private def makePath(nameList : Array[String]) = nameList mkString File.separatorChar.toString
 
   val conf = new SparkConf()
+  val sc = new SparkContext(conf)
   //conf.setMaster("spark://10.0.2.21:7077")
   //conf.setAppName("test")
-  val sc = new SparkContext(conf)
 
   type Key = String
   private[benchmark] def Key(name : String) = name
